@@ -1,0 +1,32 @@
+
+.container.data-v-dd383ca2 {
+  padding: 40rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+}
+.title.data-v-dd383ca2 {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 40rpx;
+  color: #333;
+}
+.info-row.data-v-dd383ca2 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+.label.data-v-dd383ca2 {
+  width: 160rpx;
+  font-size: 30rpx;
+  color: #666;
+}
+.value.data-v-dd383ca2 {
+  font-size: 30rpx;
+  color: #333;
+}
+.avatar.data-v-dd383ca2 {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ccc;
+}

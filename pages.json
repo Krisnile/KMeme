@@ -32,6 +32,13 @@
 			{
 			    "navigationBarTitleText": "加载中..."
 			}
+		},
+		{
+			"path" : "pages/profile/profile",
+			"style": 
+			{
+			    "navigationBarTitleText": "加载中..."
+			}
 		}
 	],
 	"easycom": {

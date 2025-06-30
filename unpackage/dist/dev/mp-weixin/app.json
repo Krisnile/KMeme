@@ -4,7 +4,8 @@
     "pages/add/add",
     "pages/collect/collect",
     "pages/mine/mine",
-    "pages/album/album"
+    "pages/album/album",
+    "pages/profile/profile"
   ],
   "window": {
     "navigationBarTextStyle": "black",

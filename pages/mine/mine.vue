@@ -54,16 +54,50 @@
 				</view>
 			</view>
 		</view>
-		<view class="listBox"></view>
-		<up-popup :show="show" @click="close">
+		<view class="listBox">
+		    <view class="section">
+				<view class="list">
+					<view class="row" @click="goToProfile">
+						<view class="left">
+							<uni-icons type="person-filled" size="20"></uni-icons>
+							<view class="text">我的信息</view>
+						</view>
+					</view>
+					<view class="row">
+						<view class="left">
+							<uni-icons type="chatboxes-filled" size="20"></uni-icons>
+							<view class="text">用户反馈</view>
+						</view>
+					</view>
+					<view class="row">
+						<view class="left">
+							<uni-icons type="link" size="20"></uni-icons>
+								<view class="text">项目地址</view>
+						</view>
+					</view>
+					<view class="row">
+						<view class="left">
+							<uni-icons type="info" size="20"></uni-icons>
+							<view class="text">关于我们</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<up-popup closeable @click="close" :show="show" round="20">
 			<view class="popup">
 				<view class="title">获取您的昵称、头像</view>
 				<view class="flex">
-					<view class="label">
-						获取用户头像
-					</view>
+					<view class="label">获取用户头像</view>
+					<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
+						<image class="avatar" :src="userInfo.avatarUrl"></image>
+					</button>
 				</view>
-				
+				<view class="flex">
+					<view class="label">获取用户昵称：</view>
+					<input @input="changeName" type="nickname">
+				</view>
+				<button size="default" type="primary" @click="userSubmit">确定</button>
 			</view>
 		</up-popup>
 	</view>
@@ -74,8 +108,17 @@ import {ref, reactive} from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { login, getUserInfo} from '../../api/api.js'
 
-onLoad(() => {
-	
+onLoad(async () => {
+	// 免登录
+	if(uni.getStorageSync('token') && !uni.getStorageSync('userInfo')) {
+		const { avatarUrl, nickName } = await getUserInfo()
+		userInfo.avatarUrl = avatarUrl
+		userInfo.nickName = nickName
+	} else if(uni.getStorageSync('token') && uni.getStorageSync('userInfo')) {
+		const { avatarUrl, nickName } = JSON.parse(uni.getStorageSync('userInfo'))
+		userInfo.avatarUrl = avatarUrl
+		userInfo.nickName = nickName
+	}
 })
 
 const userInfo = reactive({
@@ -86,7 +129,28 @@ const userInfo = reactive({
 // 弹出层显示
 const show = ref(false)
 
+const close = () => {
+	show.value = false
+}
 
+const userSubmit = () => {
+	uni.setStorageSync('userInfo', JSON.stringify(userInfo))
+	show.value = false
+	
+}
+
+const goToProfile = () => {
+	uni.navigateTo({ 
+		url: '/pages/profile/profile',
+	})
+}
+
+const onChooseavatar = (e) => {
+	userInfo.avatarUrl = e.detail.avatarUrl
+}
+const changeName = (e) => {
+	userInfo.nickName = e.detail.value
+}
 
 const setFun = () => {
 	// 给用户确认提醒
@@ -95,6 +159,7 @@ const setFun = () => {
 		content: ' 授权微信登录后才能正常使用小程序喵',
 		success(res) {
 			if (res.confirm) {
+				console.log("确认登录")
 				uni.login({
 					success: async (data) => {
 						console.log(data)
@@ -107,6 +172,11 @@ const setFun = () => {
 						// 把用户信息显示到页面
 						userInfo.avatarUrl = userData.avatarUrl
 						userInfo.nickName = userData.nickName
+						show.value = true 
+					},
+					fail(err) {
+						console.error('uni.login调用失败:', err)
+						uni.showToast({ title: '登录失败，请重试', icon: 'error' })
 					}
 				})
 			}
@@ -116,87 +186,146 @@ const setFun = () => {
 </script>
 
 <style lang="scss" scoped>
-	.content {
-		height: 100vh;
-		background-color: #f5f5f5;
-		.topBox {
-			width: 100%;
-			position: relative;
-			z-index: 1;
-			overflow: hidden;
-			padding: 40rpx 20rpx 40rpx;
-			box-sizing: border-box;
-		}
-		.topBox::after {
-			content: "";
-			width: 140%;
-			height: 200px;
-			position: absolute;
-			z-index: -1;
-			top: 0;
-			left: -20%;
-			background-color: #005588;
-			border-radius: 0 0 50% 50%;
-		}
-		.setBox {
+.content {
+	height: 100vh;
+	background-color: #f5f5f5;
+	.topBox {
+		width: 100%;
+		position: relative;
+		z-index: 1;
+		overflow: hidden;
+		padding: 40rpx 20rpx 40rpx;
+		box-sizing: border-box;
+	}
+	.topBox::after {
+		content: "";
+		width: 140%;
+		height: 200px;
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		left: -20%;
+		background-color: #005588;
+		border-radius: 0 0 50% 50%;
+	}
+	.setBox {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.set-left {
+			width: 18%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			.set-left {
-				width: 18%;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
+		}
+		.txt {
+			color: #fff;
+			font-size: 30rpx;
+		}
+	}
+	.users {
+		margin-top: 35rpx;
+		padding: 30rpx;
+		box-sizing: border-box;
+		height: 280rpx;
+		background-color: #fff;
+		box-shadow: 1px 10rpx 20rpx #aceace;
+		border-radius: 16rpx;
+		.u-top {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			margin-bottom: 30rpx;
+			image {
+				width: 100rpx;
+				height: 100rpx;
+				border-radius: 50%;
+				margin-right: 20rpx;
 			}
-			.txt {
-				color: #fff;
+			.tit {
 				font-size: 30rpx;
+				font-weight: 700;
+				color: #333;
 			}
 		}
-		.users {
-			margin-top: 35rpx;
-			padding: 30rpx;
-			box-sizing: border-box;
-			height: 280rpx;
-			background-color: #fff;
-			box-shadow: 1px 10rpx 20rpx #aceace;
-			border-radius: 16rpx;
-			.u-top {
-				display: flex;
-				justify-content: flex-start;
-				align-items: center;
-				margin-bottom: 30rpx;
-				image {
-					width: 100rpx;
-					height: 100rpx;
-					border-radius: 50%;
-					margin-right: 20rpx;
+		.u-bottom {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			.u-item {
+				text-align: center;
+				.u-tit {
+					color: #757575;
+					font-size: 26rpx;
+					margin-top: 10rpx;
 				}
-				.tit {
-					font-size: 30rpx;
+				.num {
+					color: #000;
+					font-size: 33rpx;
 					font-weight: 700;
-					color: #333;
 				}
 			}
-			.u-bottom {
+		}
+	}
+	.listBox {
+		padding: 20rpx;
+		.section {
+			background-color: #fff;
+			border-radius: 16rpx;
+			padding: 20rpx;
+			margin-bottom: 20rpx;
+			.list {
 				display: flex;
-				justify-content: space-around;
-				align-items: center;
-				.u-item {
-					text-align: center;
-					.u-tit {
-						color: #757575;
-						font-size: 26rpx;
-						margin-top: 10rpx;
+				flex-direction: column;
+				.row {
+					display: flex;
+					align-items: center;
+					padding: 20rpx 0;
+					border-bottom: 1px solid #eee;
+					&:last-child {
+						border-bottom: none;
 					}
-					.num {
-						color: #000;
-						font-size: 33rpx;
-						font-weight: 700;
+					.left {
+						display: flex;
+						align-items: center;
+					
+						.text {
+							margin-left: 20rpx;
+							font-size: 30rpx;
+							color: #333;
+						}
 					}
 				}
 			}
 		}
 	}
-
+	.popup {
+		padding: 20rpx;
+		border-radius: 20rpx 20rpx 0 0;
+		.title {
+			margin-bottom: 20rpx;
+			font-size: 40rpx;
+			text-align: center;
+		}
+		.flex {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			border-bottom: 1px solid #f5f5f5;
+			padding: 24rpx 0;
+		}
+		image {
+			width: 70rpx;
+			height: 70rpx;
+		}
+		.avatar-warpper {
+			border: none;
+			border-radius: 10rpx;
+			width: 70rpx;
+			height: 70rpx;
+			margin-left: 20rpx;
+			padding: 0;
+		}
+	}
+}
 </style>
