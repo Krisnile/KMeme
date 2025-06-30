@@ -2,7 +2,7 @@
 	<!-- 页面主体内容 -->
 	<view class="content">
 		<up-search placeholder="图片搜索" bg-color="#e3e3e3" v-model="keyword"></up-search>
-		<up-swiper v-if="bannerList.length" :list="bannerList" keyName="image" showTitle radius="8" :autoplay="true" height="160"></up-swiper>
+		<up-swiper style="margin-top: 10px;" v-if="bannerList.length" :list="bannerList" keyName="image" showTitle radius="8" :autoplay="true" height="160"></up-swiper>
 		<up-notice-bar text="欢迎来到 KMeme 相册系统!" bg-color="#ffffff"></up-notice-bar>
 		
 		<!-- 相册列表 -->
@@ -83,6 +83,9 @@
 	
 	.album-info {
 	  margin-top: 10rpx;
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
 	}
 	
 	.album-title {
