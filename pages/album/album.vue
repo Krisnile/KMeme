@@ -43,7 +43,7 @@
 			</up-waterfall>
 		</view>
 		<view v-if="showTopBtn" @click="toTop" class="topClass">
-			<up-icon name="arrow-upward" color="#ffffff" size="28"></up-icon>
+			<up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
 		</view>
 	</view>
 </template>
@@ -56,12 +56,15 @@ import { getAlbumImages } from '../../api/api.js' // 替换为你具体的接口
 const title = ref('相册')
 const flowList = ref([]) // 瀑布流图像列表
 
+// 滚动是否显示 0不显示 1显示
+const showTopBtn = ref(0)
+// 样式配置
+const topBtnIconColor = '#ffffff'
+
 onLoad((options) => {
 	// 接收页面传参
 	const albumId = Number(options.id)
 	title.value = decodeURIComponent(options.title || '相册')
-	// 滚动是否显示 0不显示 1显示
-	const showTopBtn = ref(0)
 
 	// 设置页面标题
 	uni.setNavigationBarTitle({ title: title.value })
@@ -78,27 +81,29 @@ onLoad((options) => {
 			icon: 'none'
 		  })
     })
-	// 监听滚动
-	onPageScroll((e) => {
-		if (e.scrollTop > 600) {
-			showTopBtn.value = 1
-		} else {
-			showTopBtn.value = 0
-		}
-	})
-	// 置顶效果
-	const toTop = () => {
-		uni.pageScrollTo({
-			scrollTop: 0,
-			duration: 300
-		})
+})
+
+// 监听滚动
+onPageScroll((e) => {
+	if (e.scrollTop > 600) {
+		showTopBtn.value = 1
+	} else {
+		showTopBtn.value = 0
 	}
 })
+
+// 置顶效果
+const toTop = () => {
+	uni.pageScrollTo({
+		scrollTop: 0,
+		duration: 300
+	})
+}
 </script>
 
 <style>
 	page {
-		background-color: rgb(240, 240,, 240,);
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	}
 </style>
 
@@ -156,10 +161,10 @@ onLoad((options) => {
 		}
 	}
 	.topClass {
-		position: flex;
+		position: fixed;
 		bottom: 120rpx;
 		right: 30rpx;
-		background-color: rgba(0, 0, 0, 0.5);
+		background-color: rgba(0, 0, 0, 0.7);
 		padding: 20rpx;
 		width: 44rpx;
 		height: 44rpx;
@@ -167,6 +172,14 @@ onLoad((options) => {
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		backdrop-filter: blur(10px);
+		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+		transition: all 0.3s ease;
+		z-index: 999;
+		
+		&:active {
+			transform: scale(0.9);
+		}
 	}
 
 </style>
