@@ -18,11 +18,24 @@ const getAlbumImages = (albumId) => {
   }
 };
 const login = (code) => {
-  return api_http.http("/login", { code }, "POST");
+  {
+    return Promise.resolve({
+      token: "mocked_token_123456"
+    });
+  }
 };
 const getUserInfo = () => {
-  return api_http.http("/getUserInfo");
+  {
+    return Promise.resolve({
+      avatarUrl: "/static/catcats.jpg",
+      nickName: "测试用户"
+    });
+  }
 };
+const collectList = () => {
+  return api_http.http("/collect/list");
+};
+exports.collectList = collectList;
 exports.getAlbumImages = getAlbumImages;
 exports.getBanner = getBanner;
 exports.getHomeList = getHomeList;

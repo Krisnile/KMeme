@@ -69,7 +69,6 @@
 					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 				</view>
 			</view>
-			
 			<!-- 设置选项 -->
 			<view class="menu-group">
 				<view class="group-title">设置</view>
@@ -124,6 +123,20 @@
 					<text class="menu-text">关于我们</text>
 					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 				</view>
+		<up-popup closeable @click="close" :show="show" round="20">
+			<view class="popup">
+				<view class="title">获取您的昵称、头像</view>
+				<view class="flex">
+					<view class="label">获取用户头像</view>
+					<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
+						<image class="avatar" :src="userInfo.avatarUrl"></image>
+					</button>
+				</view>
+				<view class="flex">
+					<view class="label">获取用户昵称：</view>
+					<input @input="changeName" type="nickname">
+				</view>
+				<button size="default" type="primary" @click="userSubmit">确定</button>
 			</view>
 			
 			<!-- 数据统计 -->
@@ -223,8 +236,18 @@ const logoutBtnStyle = {
 	fontWeight: 'bold'
 }
 
-onLoad(() => {
-	loadUserData()
+onLoad(async () => {
+  loadUserData()
+	// 免登录
+	if(uni.getStorageSync('token') && !uni.getStorageSync('userInfo')) {
+		const { avatarUrl, nickName } = await getUserInfo()
+		userInfo.avatarUrl = avatarUrl
+		userInfo.nickName = nickName
+	} else if(uni.getStorageSync('token') && uni.getStorageSync('userInfo')) {
+		const { avatarUrl, nickName } = JSON.parse(uni.getStorageSync('userInfo'))
+		userInfo.avatarUrl = avatarUrl
+		userInfo.nickName = nickName
+	}
 })
 
 onShow(() => {
@@ -314,6 +337,7 @@ const goToSettings = () => {
 	})
 }
 
+
 // 切换通知设置
 const toggleNotification = () => {
 	uni.showToast({
@@ -334,6 +358,29 @@ const shareApp = () => {
 			})
 		}
 	})
+}
+
+const close = () => {
+	show.value = false
+}
+
+const userSubmit = () => {
+	uni.setStorageSync('userInfo', JSON.stringify(userInfo))
+	show.value = false
+	
+}
+
+const goToProfile = () => {
+	uni.navigateTo({ 
+		url: '/pages/profile/profile',
+	})
+}
+
+const onChooseavatar = (e) => {
+	userInfo.avatarUrl = e.detail.avatarUrl
+}
+const changeName = (e) => {
+	userInfo.nickName = e.detail.value
 }
 
 // 意见反馈
@@ -362,11 +409,25 @@ const logout = () => {
 		confirmColor: '#ef4444',
 		success: (res) => {
 			if (res.confirm) {
-				// 清除用户数据
-				uni.clearStorageSync()
-				uni.showToast({
-					title: '已退出登录',
-					icon: 'success'
+				console.log("确认登录")
+				uni.login({
+					success: async (data) => {
+						console.log(data)
+						// 通过code传给后端，后端去换取sessionKey
+						const{ token } = await login(data.code)
+						console.log(token, 'token')
+						uni.setStorageSync('token', token)
+						// 通过token获取用户信息
+						const userData = await getUserInfo()
+						// 把用户信息显示到页面
+						userInfo.avatarUrl = userData.avatarUrl
+						userInfo.nickName = userData.nickName
+						show.value = true 
+					},
+					fail(err) {
+						console.error('uni.login调用失败:', err)
+						uni.showToast({ title: '登录失败，请重试', icon: 'error' })
+					}
 				})
 				// 这里可以跳转到登录页面
 			}
@@ -377,6 +438,7 @@ const logout = () => {
 </script>
 
 <style lang="scss" scoped>
+
 .mine-container {
 	min-height: 100vh;
 	background: #f8fafc;
@@ -579,5 +641,148 @@ const logout = () => {
 .logout-section {
 	padding: 20rpx;
 	margin-bottom: 100rpx;
+
+.content {
+	height: 100vh;
+	background-color: #f5f5f5;
+	.topBox {
+		width: 100%;
+		position: relative;
+		z-index: 1;
+		overflow: hidden;
+		padding: 40rpx 20rpx 40rpx;
+		box-sizing: border-box;
+	}
+	.topBox::after {
+		content: "";
+		width: 140%;
+		height: 200px;
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		left: -20%;
+		background-color: #005588;
+		border-radius: 0 0 50% 50%;
+	}
+	.setBox {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.set-left {
+			width: 18%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.txt {
+			color: #fff;
+			font-size: 30rpx;
+		}
+	}
+	.users {
+		margin-top: 35rpx;
+		padding: 30rpx;
+		box-sizing: border-box;
+		height: 280rpx;
+		background-color: #fff;
+		box-shadow: 1px 10rpx 20rpx #aceace;
+		border-radius: 16rpx;
+		.u-top {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			margin-bottom: 30rpx;
+			image {
+				width: 100rpx;
+				height: 100rpx;
+				border-radius: 50%;
+				margin-right: 20rpx;
+			}
+			.tit {
+				font-size: 30rpx;
+				font-weight: 700;
+				color: #333;
+			}
+		}
+		.u-bottom {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			.u-item {
+				text-align: center;
+				.u-tit {
+					color: #757575;
+					font-size: 26rpx;
+					margin-top: 10rpx;
+				}
+				.num {
+					color: #000;
+					font-size: 33rpx;
+					font-weight: 700;
+				}
+			}
+		}
+	}
+	.listBox {
+		padding: 20rpx;
+		.section {
+			background-color: #fff;
+			border-radius: 16rpx;
+			padding: 20rpx;
+			margin-bottom: 20rpx;
+			.list {
+				display: flex;
+				flex-direction: column;
+				.row {
+					display: flex;
+					align-items: center;
+					padding: 20rpx 0;
+					border-bottom: 1px solid #eee;
+					&:last-child {
+						border-bottom: none;
+					}
+					.left {
+						display: flex;
+						align-items: center;
+					
+						.text {
+							margin-left: 20rpx;
+							font-size: 30rpx;
+							color: #333;
+						}
+					}
+				}
+			}
+		}
+	}
+	.popup {
+		padding: 20rpx;
+		border-radius: 20rpx 20rpx 0 0;
+		.title {
+			margin-bottom: 20rpx;
+			font-size: 40rpx;
+			text-align: center;
+		}
+		.flex {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			border-bottom: 1px solid #f5f5f5;
+			padding: 24rpx 0;
+		}
+		image {
+			width: 70rpx;
+			height: 70rpx;
+		}
+		.avatar-warpper {
+			border: none;
+			border-radius: 10rpx;
+			width: 70rpx;
+			height: 70rpx;
+			margin-left: 20rpx;
+			padding: 0;
+		}
+	}
+
 }
 </style>

@@ -1,1 +1,1 @@
-<view></view>
+<view class="link"><view class="tk cc-list"><view wx:for="{{a}}" wx:for-item="item" wx:key="c" class="item"><image src="{{item.a}}" mode="aspectFill"></image><view class="topFixed">收藏</view><view class="infos"><view class="tit">{{item.b}}</view></view></view></view></view>
