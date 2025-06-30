@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/add/add",
+    "pages/collect/collect",
+    "pages/mine/mine",
+    "pages/album/album"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#2867CE",
+    "borderStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/static/ly-home0.png",
+        "selectedIconPath": "/static/ly-home1.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/add/add",
+        "iconPath": "/static/ly-add0.png",
+        "selectedIconPath": "/static/ly-add1.png",
+        "text": "添加"
+      },
+      {
+        "pagePath": "pages/collect/collect",
+        "iconPath": "/static/ly-collect0.png",
+        "selectedIconPath": "/static/ly-collect1.png",
+        "text": "收藏"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "/static/ly-mine0.png",
+        "selectedIconPath": "/static/ly-mine1.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
