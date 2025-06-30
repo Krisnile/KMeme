@@ -1,7 +1,11 @@
 "use strict";
 const common_vendor = require("../../../../common/vendor.js");
 const uni_modules_uviewPlus_libs_function_test = require("./test.js");
+const uni_modules_uviewPlus_libs_function_digit = require("./digit.js");
 const uni_modules_uviewPlus_libs_config_config = require("../config/config.js");
+function range(min = 0, max = 0, value = 0) {
+  return Math.max(min, Math.min(max, Number(value)));
+}
 function getPx(value, unit = false) {
   if (uni_modules_uviewPlus_libs_function_test.number(value)) {
     return unit ? `${value}px` : Number(value);
@@ -22,6 +26,13 @@ function getWindowInfo() {
   let ret = {};
   ret = common_vendor.index.getWindowInfo();
   return ret;
+}
+function random(min, max) {
+  if (min >= 0 && max > 0 && max >= min) {
+    const gab = max - min + 1;
+    return Math.floor(Math.random() * gab + min);
+  }
+  return 0;
 }
 function guid(len = 32, firstU = true, radix = null) {
   const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
@@ -183,6 +194,43 @@ if (!String.prototype.padStart) {
     return fillString.slice(0, fillLength) + str;
   };
 }
+function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
+  let date;
+  if (!dateTime) {
+    date = /* @__PURE__ */ new Date();
+  } else if (/^\d{10}$/.test(dateTime.toString().trim())) {
+    date = new Date(dateTime * 1e3);
+  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
+    date = new Date(Number(dateTime));
+  } else {
+    date = new Date(
+      typeof dateTime === "string" ? dateTime.replace(/-/g, "/") : dateTime
+    );
+  }
+  const timeSource = {
+    "y": date.getFullYear().toString(),
+    // 年
+    "m": (date.getMonth() + 1).toString().padStart(2, "0"),
+    // 月
+    "d": date.getDate().toString().padStart(2, "0"),
+    // 日
+    "h": date.getHours().toString().padStart(2, "0"),
+    // 时
+    "M": date.getMinutes().toString().padStart(2, "0"),
+    // 分
+    "s": date.getSeconds().toString().padStart(2, "0")
+    // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (const key in timeSource) {
+    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
+    if (ret) {
+      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
+      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
+    }
+  }
+  return formatStr;
+}
 function trim(str, pos = "both") {
   str = String(str);
   if (pos == "both") {
@@ -244,6 +292,85 @@ function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
   }
   return _result.length ? prefix + _result.join("&") : "";
 }
+function toast(title, duration = 2e3) {
+  common_vendor.index.showToast({
+    title: String(title),
+    icon: "none",
+    duration
+  });
+}
+function priceFormat(number, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
+  number = `${number}`.replace(/[^0-9+-Ee.]/g, "");
+  const n = !isFinite(+number) ? 0 : +number;
+  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
+  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
+  let s = "";
+  s = (prec ? uni_modules_uviewPlus_libs_function_digit.round(n, prec) + "" : `${Math.round(n)}`).split(".");
+  const re = /(-?\d+)(\d{3})/;
+  while (re.test(s[0])) {
+    s[0] = s[0].replace(re, `$1${sep}$2`);
+  }
+  if ((s[1] || "").length < prec) {
+    s[1] = s[1] || "";
+    s[1] += new Array(prec - s[1].length + 1).join("0");
+  }
+  return s.join(dec);
+}
+function formValidate(instance, event) {
+  const formItem = $parent.call(instance, "u-form-item");
+  const form = $parent.call(instance, "u-form");
+  if (formItem && form) {
+    form.validateField(formItem.prop, () => {
+    }, event);
+  }
+}
+function getProperty(obj, key) {
+  if (typeof obj !== "object" || null == obj) {
+    return "";
+  }
+  if (typeof key !== "string" || key === "") {
+    return "";
+  }
+  if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    let firstObj = obj[keys[0]] || {};
+    for (let i = 1; i < keys.length; i++) {
+      if (firstObj) {
+        firstObj = firstObj[keys[i]];
+      }
+    }
+    return firstObj;
+  }
+  return obj[key];
+}
+function setProperty(obj, key, value) {
+  if (typeof obj !== "object" || null == obj) {
+    return;
+  }
+  const inFn = function(_obj, keys, v) {
+    if (keys.length === 1) {
+      _obj[keys[0]] = v;
+      return;
+    }
+    while (keys.length > 1) {
+      const k = keys[0];
+      if (!_obj[k] || typeof _obj[k] !== "object") {
+        _obj[k] = {};
+      }
+      keys.shift();
+      inFn(_obj[k], keys, v);
+    }
+  };
+  if (typeof key !== "string" || key === "")
+    ;
+  else if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    inFn(obj, keys, value);
+  } else {
+    obj[key] = value;
+  }
+}
 function page() {
   const pages2 = getCurrentPages();
   return `/${pages2[pages2.length - 1].route || ""}`;
@@ -251,13 +378,22 @@ function page() {
 exports.$parent = $parent;
 exports.addStyle = addStyle;
 exports.addUnit = addUnit;
+exports.deepClone = deepClone;
 exports.deepMerge = deepMerge;
 exports.error = error;
+exports.formValidate = formValidate;
+exports.getProperty = getProperty;
 exports.getPx = getPx;
 exports.getWindowInfo = getWindowInfo;
 exports.guid = guid;
 exports.page = page;
+exports.priceFormat = priceFormat;
 exports.queryParams = queryParams;
+exports.random = random;
+exports.range = range;
+exports.setProperty = setProperty;
 exports.shallowMerge = shallowMerge;
 exports.sleep = sleep;
+exports.timeFormat = timeFormat;
+exports.toast = toast;
 //# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/function/index.js.map

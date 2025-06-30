@@ -6,7 +6,7 @@
 			<view class="user-info">
 				<view class="avatar-section">
 					<up-avatar 
-						:src="userInfo.avatar" 
+						:src="userInfo.avatarUrl" 
 						size="120"
 						shape="circle"
 						:random="true">
@@ -16,7 +16,7 @@
 					</view>
 				</view>
 				<view class="user-details">
-					<text class="user-name">{{ userInfo.nickname }}</text>
+					<text class="user-name">{{ userInfo.nickName }}</text>
 					<text class="user-desc">{{ userInfo.description }}</text>
 					<view class="user-stats">
 						<view class="stat-item">
@@ -123,20 +123,6 @@
 					<text class="menu-text">关于我们</text>
 					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 				</view>
-		<up-popup closeable @click="close" :show="show" round="20">
-			<view class="popup">
-				<view class="title">获取您的昵称、头像</view>
-				<view class="flex">
-					<view class="label">获取用户头像</view>
-					<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
-						<image class="avatar" :src="userInfo.avatarUrl"></image>
-					</button>
-				</view>
-				<view class="flex">
-					<view class="label">获取用户昵称：</view>
-					<input @input="changeName" type="nickname">
-				</view>
-				<button size="default" type="primary" @click="userSubmit">确定</button>
 			</view>
 			
 			<!-- 数据统计 -->
@@ -176,6 +162,24 @@
 				退出登录
 			</up-button>
 		</view>
+		
+		<!-- 登录弹窗 -->
+		<up-popup closeable @click="close" :show="show" round="20">
+			<view class="popup">
+				<view class="title">获取您的昵称、头像</view>
+				<view class="flex">
+					<view class="label">获取用户头像</view>
+					<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
+						<image class="avatar" :src="userInfo.avatarUrl"></image>
+					</button>
+				</view>
+				<view class="flex">
+					<view class="label">获取用户昵称：</view>
+					<input @input="changeName" type="nickname">
+				</view>
+				<button size="default" type="primary" @click="userSubmit">确定</button>
+			</view>
+		</up-popup>
 	</view>
 </template>
 
@@ -185,9 +189,9 @@ import { onLoad, onShow } from '@dcloudio/uni-app'
 
 // 用户信息
 const userInfo = reactive({
-	nickname: 'KMeme用户',
+	nickName: 'KMeme用户',
 	description: '热爱摄影，记录美好生活',
-	avatar: 'https://cdn.uviewui.com/uview/album/1.jpg',
+	avatarUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
 	uploadCount: 23,
 	collectCount: 47,
 	likeCount: 156
@@ -273,7 +277,7 @@ const editAvatar = () => {
 		sizeType: ['compressed'],
 		sourceType: ['album', 'camera'],
 		success: (res) => {
-			userInfo.avatar = res.tempFilePaths[0]
+			userInfo.avatarUrl = res.tempFilePaths[0]
 			uni.showToast({
 				title: '头像已更新',
 				icon: 'success'
@@ -287,10 +291,10 @@ const editProfile = () => {
 	uni.showModal({
 		title: '编辑昵称',
 		editable: true,
-		placeholderText: userInfo.nickname,
+		placeholderText: userInfo.nickName,
 		success: (res) => {
 			if (res.confirm && res.content) {
-				userInfo.nickname = res.content
+				userInfo.nickName = res.content
 				uni.showToast({
 					title: '昵称已更新',
 					icon: 'success'
@@ -641,7 +645,7 @@ const logout = () => {
 .logout-section {
 	padding: 20rpx;
 	margin-bottom: 100rpx;
-
+}
 .content {
 	height: 100vh;
 	background-color: #f5f5f5;
@@ -783,6 +787,5 @@ const logout = () => {
 			padding: 0;
 		}
 	}
-
 }
 </style>
