@@ -21,10 +21,10 @@ const _sfc_main = {
     const flowList = common_vendor.ref([]);
     const showTopBtn = common_vendor.ref(0);
     common_vendor.onLoad((options) => {
-      const albumId = Number(options.id);
+      Number(options.id);
       title.value = decodeURIComponent(options.title || "相册");
       common_vendor.index.setNavigationBarTitle({ title: title.value });
-      api_api.getAlbumImages(albumId).then((res) => {
+      api_api.getAlbumImages().then((res) => {
         flowList.value = res.data || [];
       }).catch(() => {
         common_vendor.index.showToast({

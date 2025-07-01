@@ -13,7 +13,7 @@ const getHomeList = () => {
 };
 const getAlbumImages = (albumId) => {
   {
-    return Promise.resolve(api_mockData_pageApi.pageApi.flowList(albumId));
+    return Promise.resolve(api_mockData_pageApi.pageApi.getAlbumImages().data);
   }
 };
 exports.getAlbumImages = getAlbumImages;

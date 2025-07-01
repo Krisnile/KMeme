@@ -8055,9 +8055,6 @@ const createSubpackageApp = initCreateSubpackageApp();
   wx.createSubpackageApp = global.createSubpackageApp = createSubpackageApp;
 }
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
 var mock = { exports: {} };
 (function(module, exports) {
   (function webpackUniversalModuleDefinition(root, factory) {
@@ -8105,7 +8102,7 @@ var mock = { exports: {} };
               https://github.com/nuysoft/Mock
               墨智 mozhi.gyy@taobao.com nuysoft@gmail.com
           */
-          var Mock2 = {
+          var Mock = {
             Handler: Handler2,
             Random: Random2,
             Util: Util2,
@@ -8119,10 +8116,10 @@ var mock = { exports: {} };
             },
             _mocked: {}
           };
-          Mock2.version = "1.0.1-beta3";
+          Mock.version = "1.0.1-beta3";
           if (XHR)
-            XHR.Mock = Mock2;
-          Mock2.mock = function(rurl, rtype, template) {
+            XHR.Mock = Mock;
+          Mock.mock = function(rurl, rtype, template) {
             if (arguments.length === 1) {
               return Handler2.gen(rurl);
             }
@@ -8132,14 +8129,14 @@ var mock = { exports: {} };
             }
             if (XHR)
               window.XMLHttpRequest = XHR;
-            Mock2._mocked[rurl + (rtype || "")] = {
+            Mock._mocked[rurl + (rtype || "")] = {
               rurl,
               rtype,
               template
             };
-            return Mock2;
+            return Mock;
           };
-          module2.exports = Mock2;
+          module2.exports = Mock;
         },
         /* 1 */
         /***/
@@ -15559,15 +15556,12 @@ var mock = { exports: {} };
     );
   });
 })(mock);
-var mockExports = mock.exports;
-const Mock = /* @__PURE__ */ getDefaultExportFromCjs(mockExports);
 const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
 const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
 const onPageScroll = /* @__PURE__ */ createHook(ON_PAGE_SCROLL);
-exports.Mock = Mock;
 exports._export_sfc = _export_sfc;
 exports.computed = computed;
 exports.createSSRApp = createSSRApp;

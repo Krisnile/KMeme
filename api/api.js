@@ -1,76 +1,105 @@
 import pageApi from './mockData/pageApi.js'
 import http from './http.js'
-import { ref } from 'vue'
 
-// uniapp 提供的跨平台环境变量
-const isH5 = process.env.UNI_PLATFORM === 'h5'
-const isMp = process.env.UNI_PLATFORM !== 'h5'
+// 小程序使用 mock 数据
+const isMock = process.env.NODE_ENV === 'development' && process.env.UNI_PLATFORM !== 'h5'
 
+/**
+ * 获取 Banner 列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @returns {Promise<Array>} Banner 数据。
+ */
 export const getBanner = () => {
-  if (isH5) {
-    // H5环境走http请求，mockjs会自动拦截
-    return http('/user/getBanner')
-  } else {
-    // 小程序环境，直接返回本地数据，包装成Promise
-    return Promise.resolve(pageApi.getBanner().data)
-  }
+	if (isMock) {
+		return Promise.resolve(pageApi.getBanner().data)
+	}
+	return http({
+		url: '/user/getBanner',
+		method: 'GET'
+	})
 }
 
+/**
+ * 获取首页列表数据。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @returns {Promise<Array>} 首页列表数据。
+ */
 export const getHomeList = () => {
-  if (isH5) {
-    return http('/user/getHomeList')
-  } else {
-    return Promise.resolve(pageApi.getHomeList().data)
-  }
+	if (isMock) {
+		return Promise.resolve(pageApi.getHomeList().data)
+	}
+	return http({
+		url: '/user/getHomeList',
+		method: 'GET'
+	})
 }
 
+/**
+ * 获取相册图片列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string} albumId - 相册 ID。
+ * @returns {Promise<Array>} 相册图片数据。
+ */
 export const getAlbumImages = (albumId) => {
-  if (isH5) {
-    return http({
-      url: '/album/images',
-      method: 'POST',
-      data: { albumId }
-    })
-  } else {
-    return Promise.resolve(pageApi.flowList(albumId))
-  }
+	if (isMock) {
+		return Promise.resolve(pageApi.getAlbumImages().data)
+	}
+	return http({
+		url: '/album/images',
+		method: 'POST',
+		data: { albumId }
+	})
 }
 
-// // 登录
-// export const login = (code) => {
-// 	return http('/login', { code }, 'POST')
-// }
-
-// //获取用户信息
-// export const getUserInfo = () => {
-// 	return http('/getUserInfo')
-// }
+/**
+ * 用户登录。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string} code - 登录凭证。
+ * @returns {Promise<Object>} 登录结果，包含 token。
+ */
 export const login = (code) => {
-  if (isH5) {
-    return http({
-      url: '/login',
-      method: 'POST',
-      data: { code }
-    })
-  } else {
-    return Promise.resolve({
-      token: 'mocked_token_123456'
-    })
-  }
+	if (isMock) {
+		return Promise.resolve(pageApi.login().data)
+	}
+	return http({
+		url: '/login',
+		method: 'POST',
+		data: { code }
+	})
 }
 
+/**
+ * 获取用户信息。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @returns {Promise<Object>} 用户信息。
+ */
 export const getUserInfo = () => {
-  if (isH5) {
-    return http('/getUserInfo')
-  } else {
-    return Promise.resolve({
-      avatarUrl: '/static/catcats.jpg',
-      nickName: '测试用户'
-    })
-  }
+	if (isMock) {
+		return Promise.resolve(pageApi.getUserInfo().data)
+	}
+	return http({
+		url: '/getUserInfo',
+		method: 'GET'
+	})
 }
 
-// 我的收藏
+/**
+ * 获取我的收藏列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @returns {Promise<Array>} 收藏列表数据。
+ */
 export const collectList = () => {
-	return http('/collect/list')
+	if (isMock) {
+		return Promise.resolve(pageApi.collectList().data)
+	}
+	return http({
+		url: '/collect/list',
+		method: 'GET'
+	})
 }
