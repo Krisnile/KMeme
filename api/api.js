@@ -45,7 +45,8 @@ export const getHomeList = () => {
  */
 export const getAlbumImages = (albumId) => {
 	if (isMock) {
-		return Promise.resolve(pageApi.getAlbumImages().data)
+		
+		return Promise.resolve(pageApi.getAlbumImages(albumId))
 	}
 	return http({
 		url: '/album/images',

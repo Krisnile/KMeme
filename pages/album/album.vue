@@ -95,6 +95,7 @@ onLoad((options) => {
 		.then(res => {
 		  // 假设 res.data 是 [{ img, title, tag, isCollected }, ...]
 		  flowList.value = res.data || []
+		  console.log('flowList.value:', flowList.value)
 		})
 		.catch(() => {
 		  uni.showToast({
@@ -136,78 +137,90 @@ const goBack = () => {
 </style>
 
 <style lang="scss" scoped>
-	.album-box {
-	  padding: 20rpx;
+.album-container {
+  padding: 20rpx;
+  .content {
+  	position: absolute;
+  	top: 150rpx; 
+  	left: 0;
+  	right: 0;
+  	bottom: 0;
+      padding: 20rpx;
+      padding-top: 50rpx; // 给顶部导航栏留出空间
+      padding-bottom: 100rpx;
+  	overflow-y: scroll;
+  	box-sizing: border-box;
+  }
+}
+.list {
+	margin: 30rpx 0;
+	.demo-warter {
+		margin: 10rpx 10rpx 10rpx 0;
+		background-color: #fff;
+		border-radius: 16rpx;
+		padding: 16rpx;
+		position: relative;
 	}
-	.list {
-		margin: 30rpx 0;
-		.demo-warter {
-			margin: 10rpx 10rpx 10rpx 0;
-			background-color: #fff;
-			border-radius: 16rpx;
-			padding: 16rpx;
-			position: relative;
-		}
-		.demo-title {
-			font-size: 30rpx;
-			margin-top: 10rpx;
-			color: #303133;
-		}
-		.demo-tag {
-			display: flex;
-			margin-top: 10rpx;
-			.demo-tag-owner {
-				border: 1px solid rgb(252, 163, 129);
-				color: #ffaa00;
-				font-size: 20rpx;
-				display: flex;
-				align-items: center;
-				padding: 4rpx 14rpx;
-				border-radius: 50rpx;
-			}
-			.demo-tag-text {
-				border: 1px solid #00aaff;
-				color: #00aaff;
-				font-size: 20rpx;
-				display: flex;
-				align-items: center;
-				padding: 4rpx 14rpx;
-				border-radius: 50rpx;
-			}
-		}
-		.isCollected{
-			position: absolute;
-			top: 20rpx;
-			right: 20rpx;
-			font-size: 24rpx;
-			color: #fff;
-			line-height: 32rpx;
-			background-color: #ff0000;
-			text-align: center;
-			border-radius: 10rpx;
-			padding: 4rpx 10rpx;
-		}
+	.demo-title {
+		font-size: 30rpx;
+		margin-top: 10rpx;
+		color: #303133;
 	}
-	.topClass {
-		position: fixed;
-		bottom: 120rpx;
-		right: 30rpx;
-		background-color: rgba(0, 0, 0, 0.7);
-		padding: 20rpx;
-		width: 44rpx;
-		height: 44rpx;
-		border-radius: 40rpx;
+	.demo-tag {
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		backdrop-filter: blur(10px);
-		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
-		transition: all 0.3s ease;
-		z-index: 999;
-		
-		&:active {
-			transform: scale(0.9);
+		margin-top: 10rpx;
+		.demo-tag-owner {
+			border: 1px solid rgb(252, 163, 129);
+			color: #ffaa00;
+			font-size: 20rpx;
+			display: flex;
+			align-items: center;
+			padding: 4rpx 14rpx;
+			border-radius: 50rpx;
+		}
+		.demo-tag-text {
+			border: 1px solid #00aaff;
+			color: #00aaff;
+			font-size: 20rpx;
+			display: flex;
+			align-items: center;
+			padding: 4rpx 14rpx;
+			border-radius: 50rpx;
 		}
 	}
+	.isCollected{
+		position: absolute;
+		top: 20rpx;
+		right: 20rpx;
+		font-size: 24rpx;
+		color: #fff;
+		line-height: 32rpx;
+		background-color: #ff0000;
+		text-align: center;
+		border-radius: 10rpx;
+		padding: 4rpx 10rpx;
+	}
+}
+.topClass {
+	position: fixed;
+	bottom: 120rpx;
+	right: 30rpx;
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 20rpx;
+	width: 44rpx;
+	height: 44rpx;
+	border-radius: 40rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(10px);
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+	z-index: 999;
+	
+	&:active {
+		transform: scale(0.9);
+	}
+}
 
 </style>
