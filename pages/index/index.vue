@@ -1,167 +1,175 @@
 <template>
-  <!-- 页面主体内容 -->
-  <view class="content">
-    <!-- 顶部状态栏 -->
-    <!-- 		<up-status-bar></up-status-bar> -->
+	<view class="index-container">
+		<!-- 顶部导航 -->
+	    <up-status-bar></up-status-bar>
+	  <!-- 页面主体内容 -->
+	  
+		<!-- 		
+		<view class="header">
+		  <view class="header-content">
+			<view class="logo-section">
+			  <up-icon name="photo" size="32" :color="headerIconColor"></up-icon>
+			  <text class="app-title">KMeme</text>
+			</view>
+			<view class="header-actions">
+			  <up-icon
+				name="plus-circle"
+				size="28"
+				:color="headerIconColor"
+				@tap="goToAdd"
+			  ></up-icon>
+			</view>
+		  </view>
+		</view> -->
+		<up-navbar
+		  :border="false"
+		  :bg-color="BarBg"
+		  title="KMeme"
+		  :title-style="titleStyle"
+		>
+		</up-navbar>
+	<view class="content">
+		<!-- 搜索栏：跳转搜索页 -->
+		<view class="search-container" @tap="goToSearchPage">
+		  <up-search
+			placeholder="搜索你喜欢的图片..."
+			bg-color="rgba(255,255,255,0.9)"
+			:show-action="false"
+			:disabled="true"
+		  >
+		  </up-search>
+		</view>
 
-    <!-- 顶部导航栏 -->
-    <view class="header">
-      <view class="header-content">
-        <view class="logo-section">
-          <up-icon name="photo" size="32" :color="headerIconColor"></up-icon>
-          <text class="app-title">KMeme</text>
-        </view>
-        <view class="header-actions">
-          <up-icon
-            name="plus-circle"
-            size="28"
-            :color="headerIconColor"
-            @tap="goToAdd"
-          ></up-icon>
-        </view>
-      </view>
-    </view>
+		<!-- 轮播图 -->
+		<view class="swiper-container" v-if="bannerList.length">
+		  <up-swiper
+			:list="bannerList"
+			keyName="image"
+			showTitle
+			radius="16"
+			:autoplay="true"
+			height="200"
+			:circular="true"
+			:duration="500"
+		  >
+		  </up-swiper>
+		</view>
 
-    <!-- 搜索栏：跳转搜索页 -->
-    <view class="search-container" @tap="goToSearchPage">
-      <up-search
-        placeholder="搜索你喜欢的图片..."
-        bg-color="rgba(255,255,255,0.9)"
-        :show-action="false"
-        :disabled="true"
-      >
-      </up-search>
-    </view>
+		<!-- 功能导航 -->
+		<view class="nav-container">
+		  <view class="nav-item" @tap="goToAdd">
+			<view class="nav-icon">
+			  <up-icon
+				name="camera"
+				size="24"
+				:color="navIconColors.camera"
+			  ></up-icon>
+			</view>
+			<text class="nav-text">上传图片</text>
+		  </view>
+		  <view class="nav-item" @tap="goToCollect">
+			<view class="nav-icon">
+			  <up-icon
+				name="heart"
+				size="24"
+				:color="navIconColors.heart"
+			  ></up-icon>
+			</view>
+			<text class="nav-text">我的收藏</text>
+		  </view>
+		  <view class="nav-item" @tap="goToMine">
+			<view class="nav-icon">
+			  <up-icon
+				name="account"
+				size="24"
+				:color="navIconColors.account"
+			  ></up-icon>
+			</view>
+			<text class="nav-text">个人中心</text>
+		  </view>
+		</view>
 
-    <!-- 轮播图 -->
-    <view class="swiper-container" v-if="bannerList.length">
-      <up-swiper
-        :list="bannerList"
-        keyName="image"
-        showTitle
-        radius="16"
-        :autoplay="true"
-        height="200"
-        :circular="true"
-        :duration="500"
-      >
-      </up-swiper>
-    </view>
+		<!-- 相册列表标题 -->
+		<view class="section-title">
+		  <text class="title-text">我的相册</text>
+		  <view class="title-line"></view>
+		</view>
 
-    <!-- 功能导航 -->
-    <view class="nav-container">
-      <view class="nav-item" @tap="goToAdd">
-        <view class="nav-icon">
-          <up-icon
-            name="camera"
-            size="24"
-            :color="navIconColors.camera"
-          ></up-icon>
-        </view>
-        <text class="nav-text">上传图片</text>
-      </view>
-      <view class="nav-item" @tap="goToCollect">
-        <view class="nav-icon">
-          <up-icon
-            name="heart"
-            size="24"
-            :color="navIconColors.heart"
-          ></up-icon>
-        </view>
-        <text class="nav-text">我的收藏</text>
-      </view>
-      <view class="nav-item" @tap="goToMine">
-        <view class="nav-icon">
-          <up-icon
-            name="account"
-            size="24"
-            :color="navIconColors.account"
-          ></up-icon>
-        </view>
-        <text class="nav-text">个人中心</text>
-      </view>
-    </view>
+		<!-- 相册列表 -->
+		<view class="album-list">
+		  <view
+			v-for="(album, index) in albumList"
+			:key="album.id"
+			class="album-item"
+			@tap="goToAlbum(album)"
+			:style="{ animationDelay: index * 0.1 + 's' }"
+		  >
+			<view class="album-image-container">
+			  <up-lazy-load
+				:image="album.img"
+				:index="index"
+				threshold="-450"
+				border-radius="12"
+				:fade-show="true"
+			  >
+			  </up-lazy-load>
+			  <view class="album-overlay">
+				<up-icon
+				  name="eye"
+				  size="20"
+				  :color="albumIconColors.eye"
+				></up-icon>
+			  </view>
+			</view>
+			<view class="album-info">
+			  <text class="album-title">{{ album.title }}</text>
+			  <view class="album-meta">
+				<view class="album-tag">
+				  <up-icon
+					name="tag"
+					size="12"
+					:color="albumIconColors.tag"
+				  ></up-icon>
+				  <text>{{ album.tag }}</text>
+				</view>
+				<view class="album-stats">
+				  <up-icon
+					name="thumb-up"
+					size="12"
+					:color="albumIconColors.thumbUp"
+				  ></up-icon>
+				  <text>{{ Math.floor(Math.random() * 100) + 10 }}</text>
+				</view>
+			  </view>
+			</view>
+		  </view>
+		</view>
 
-    <!-- 相册列表标题 -->
-    <view class="section-title">
-      <text class="title-text">我的相册</text>
-      <view class="title-line"></view>
-    </view>
+		<!-- 置顶按钮 -->
+		<view v-if="showTopBtn" @click="toTop" class="topClass">
+		  <up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
+		</view>
 
-    <!-- 相册列表 -->
-    <view class="album-list">
-      <view
-        v-for="(album, index) in albumList"
-        :key="album.id"
-        class="album-item"
-        @tap="goToAlbum(album)"
-        :style="{ animationDelay: index * 0.1 + 's' }"
-      >
-        <view class="album-image-container">
-          <up-lazy-load
-            :image="album.img"
-            :index="index"
-            threshold="-450"
-            border-radius="12"
-            :fade-show="true"
-          >
-          </up-lazy-load>
-          <view class="album-overlay">
-            <up-icon
-              name="eye"
-              size="20"
-              :color="albumIconColors.eye"
-            ></up-icon>
-          </view>
-        </view>
-        <view class="album-info">
-          <text class="album-title">{{ album.title }}</text>
-          <view class="album-meta">
-            <view class="album-tag">
-              <up-icon
-                name="tag"
-                size="12"
-                :color="albumIconColors.tag"
-              ></up-icon>
-              <text>{{ album.tag }}</text>
-            </view>
-            <view class="album-stats">
-              <up-icon
-                name="thumb-up"
-                size="12"
-                :color="albumIconColors.thumbUp"
-              ></up-icon>
-              <text>{{ Math.floor(Math.random() * 100) + 10 }}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
+		<!-- 上滑加载提示 -->
+		<view class="load-more" v-if="albumList.length > 0">
+		  <up-line :color="lineColor" margin="20px 0"></up-line>
+		  <text class="load-more-text">上滑查看更多精彩内容</text>
+		</view>
 
-    <!-- 置顶按钮 -->
-    <view v-if="showTopBtn" @click="toTop" class="topClass">
-      <up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
-    </view>
-
-    <!-- 上滑加载提示 -->
-    <view class="load-more" v-if="albumList.length > 0">
-      <up-line :color="lineColor" margin="20px 0"></up-line>
-      <text class="load-more-text">上滑查看更多精彩内容</text>
-    </view>
-
-    <!-- footer信息 -->
-    <view class="footer">
-      <view class="footer-content">
-        <text class="footer-copyright">© 2025 KMeme 版权所有</text>
-        <text class="footer-version">版本号：v1.0.0</text>
-        <view class="footer-links">
-          <text class="footer-link">隐私政策</text>
-          <text class="footer-divider">|</text>
-          <text class="footer-link">服务条款</text>
-        </view>
-      </view>
-    </view>
-  </view>
+		<!-- footer信息 -->
+		<view class="footer">
+		  <view class="footer-content">
+			<text class="footer-copyright">© 2025 KMeme 版权所有</text>
+			<text class="footer-version">版本号：v1.0.0</text>
+			<view class="footer-links">
+			  <text class="footer-link">隐私政策</text>
+			  <text class="footer-divider">|</text>
+			  <text class="footer-link">服务条款</text>
+			</view>
+		  </view>
+		</view>
+	  </view>
+	  </view>
 </template>
 
 <script setup>
@@ -175,7 +183,9 @@ const bannerList = ref([]);
 // 相册数据
 const albumList = ref([]);
 // 样式配置
-const headerIconColor = "#fff";
+const BarBg = '#5e2ec0';
+// const headerIconColor = "#fff";
+const titleStyle = { color: "#fff", fontWeight: "bold" };
 const navIconColors = {
   camera: "#6366f1",
   heart: "#ef4444",
@@ -284,9 +294,21 @@ page {
 </style>
 
 <style lang="scss" scoped>
-.content {
+.index-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  .content {
+  	position: absolute;
+  	top: 150rpx; 
+  	left: 0;
+  	right: 0;
+  	bottom: 0;
+      padding: 20rpx;
+      padding-top: 50rpx; // 给顶部导航栏留出空间
+      padding-bottom: 100rpx;
+  	overflow-y: scroll;
+  	box-sizing: border-box;
+  }
 }
 
 // 顶部导航栏
@@ -339,10 +361,10 @@ page {
 .nav-container {
   display: flex;
   justify-content: space-around;
-  margin: 0 20rpx 30rpx;
+  margin: 5rpx 20rpx 5rpx 30rpx;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 16rpx;
-  padding: 30rpx 20rpx;
+  padding: 20rpx 20rpx;
   backdrop-filter: blur(10px);
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
 
@@ -380,7 +402,7 @@ page {
 .section-title {
   display: flex;
   align-items: center;
-  margin: 0 20rpx 30rpx;
+  margin: 10rpx 20rpx 10rpx 30rpx;
 
   .title-text {
     font-size: 32rpx;

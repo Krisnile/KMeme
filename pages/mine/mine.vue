@@ -1,185 +1,198 @@
 <template>
 	<view class="mine-container">
-		<!-- 顶部用户信息 -->
-		<view class="user-header">
-			<view class="user-bg"></view>
-			<view class="user-info">
-				<view class="avatar-section">
-					<up-avatar 
-						:src="userInfo.avatarUrl" 
-						size="120"
-						shape="circle"
-						:random="true">
-					</up-avatar>
-					<view class="avatar-edit" @tap="editAvatar">
-						<up-icon name="camera" size="16" :color="iconColors.camera"></up-icon>
-					</view>
-				</view>
-				<view class="user-details">
-					<text class="user-name">{{ userInfo.nickName }}</text>
-					<text class="user-desc">{{ userInfo.description }}</text>
-					<view class="user-stats">
-						<view class="stat-item">
-							<text class="stat-number">{{ userInfo.uploadCount }}</text>
-							<text class="stat-label">上传</text>
-						</view>
-						<view class="stat-item">
-							<text class="stat-number">{{ userInfo.collectCount }}</text>
-							<text class="stat-label">收藏</text>
-						</view>
-						<view class="stat-item">
-							<text class="stat-number">{{ userInfo.likeCount }}</text>
-							<text class="stat-label">获赞</text>
+		<!-- 顶部导航 -->
+		<up-status-bar></up-status-bar>
+		<up-navbar
+		  :border="false"
+		  :bg-color="BarBg"
+		  title="个人中心"
+		  :title-style="titleStyle"
+		  :left-icon-color="leftIconColor"
+		  @leftClick="goBack"
+		>
+		</up-navbar>
+		<view class="content">
+			<!-- 顶部用户信息 -->
+			<view class="user-header">
+				<view class="user-bg"></view>
+				<view class="user-info">
+					<view class="avatar-section">
+						<up-avatar 
+							:src="userInfo.avatarUrl" 
+							size="120"
+							shape="circle"
+							:random="true">
+						</up-avatar>
+						<view class="avatar-edit" @tap="editAvatar">
+							<up-icon name="camera" size="16" :color="iconColors.camera"></up-icon>
 						</view>
 					</view>
-				</view>
-			</view>
-		</view>
-		
-		<!-- 功能菜单 -->
-		<view class="menu-section">
-			<!-- 我的创作 -->
-			<view class="menu-group">
-				<view class="group-title">我的创作</view>
-				<view class="menu-item" @tap="goToMyUploads">
-					<view class="menu-icon">
-						<up-icon name="camera" size="20" :color="iconColors.menuCamera"></up-icon>
+					<view class="user-details">
+						<text class="user-name">{{ userInfo.nickName }}</text>
+						<text class="user-desc">{{ userInfo.description }}</text>
+						<view class="user-stats">
+							<view class="stat-item">
+								<text class="stat-number">{{ userInfo.uploadCount }}</text>
+								<text class="stat-label">上传</text>
+							</view>
+							<view class="stat-item">
+								<text class="stat-number">{{ userInfo.collectCount }}</text>
+								<text class="stat-label">收藏</text>
+							</view>
+							<view class="stat-item">
+								<text class="stat-number">{{ userInfo.likeCount }}</text>
+								<text class="stat-label">获赞</text>
+							</view>
+						</view>
 					</view>
-					<text class="menu-text">我的上传</text>
-					<view class="menu-badge" v-if="userInfo.uploadCount > 0">
-						{{ userInfo.uploadCount }}
-					</view>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
-				</view>
-				<view class="menu-item" @tap="goToMyCollections">
-					<view class="menu-icon">
-						<up-icon name="heart" size="20" :color="iconColors.heart"></up-icon>
-					</view>
-					<text class="menu-text">我的收藏</text>
-					<view class="menu-badge" v-if="userInfo.collectCount > 0">
-						{{ userInfo.collectCount }}
-					</view>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
-				</view>
-				<view class="menu-item" @tap="goToMyHistory">
-					<view class="menu-icon">
-						<up-icon name="clock" size="20" :color="iconColors.clock"></up-icon>
-					</view>
-					<text class="menu-text">浏览历史</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
-				</view>
-			</view>
-			<!-- 设置选项 -->
-			<view class="menu-group">
-				<view class="group-title">设置</view>
-				<view class="menu-item" @tap="editProfile">
-					<view class="menu-icon">
-						<up-icon name="account" size="20" :color="iconColors.account"></up-icon>
-					</view>
-					<text class="menu-text">编辑资料</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
-				</view>
-				<view class="menu-item" @tap="goToSettings">
-					<view class="menu-icon">
-						<up-icon name="setting" size="20" :color="iconColors.setting"></up-icon>
-					</view>
-					<text class="menu-text">应用设置</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
-				</view>
-				<view class="menu-item" @tap="toggleNotification">
-					<view class="menu-icon">
-						<up-icon name="bell" size="20" :color="iconColors.bell"></up-icon>
-					</view>
-					<text class="menu-text">消息推送</text>
-					<up-switch 
-						v-model="settings.notification" 
-						size="20"
-						:active-color="switchActiveColor">
-					</up-switch>
 				</view>
 			</view>
 			
-			<!-- 其他选项 -->
-			<view class="menu-group">
-				<view class="group-title">其他</view>
-				<view class="menu-item" @tap="shareApp">
-					<view class="menu-icon">
-						<up-icon name="share" size="20" :color="iconColors.share"></up-icon>
+			<!-- 功能菜单 -->
+			<view class="menu-section">
+				<!-- 我的创作 -->
+				<view class="menu-group">
+					<view class="group-title">我的创作</view>
+					<view class="menu-item" @tap="goToMyUploads">
+						<view class="menu-icon">
+							<up-icon name="camera" size="20" :color="iconColors.menuCamera"></up-icon>
+						</view>
+						<text class="menu-text">我的上传</text>
+						<view class="menu-badge" v-if="userInfo.uploadCount > 0">
+							{{ userInfo.uploadCount }}
+						</view>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 					</view>
-					<text class="menu-text">分享应用</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					<view class="menu-item" @tap="goToMyCollections">
+						<view class="menu-icon">
+							<up-icon name="heart" size="20" :color="iconColors.heart"></up-icon>
+						</view>
+						<text class="menu-text">我的收藏</text>
+						<view class="menu-badge" v-if="userInfo.collectCount > 0">
+							{{ userInfo.collectCount }}
+						</view>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					</view>
+					<view class="menu-item" @tap="goToMyHistory">
+						<view class="menu-icon">
+							<up-icon name="clock" size="20" :color="iconColors.clock"></up-icon>
+						</view>
+						<text class="menu-text">浏览历史</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					</view>
 				</view>
-				<view class="menu-item" @tap="goToFeedback">
-					<view class="menu-icon">
-						<up-icon name="chat" size="20" :color="iconColors.chat"></up-icon>
+				<!-- 设置选项 -->
+				<view class="menu-group">
+					<view class="group-title">设置</view>
+					<view class="menu-item" @tap="editProfile">
+						<view class="menu-icon">
+							<up-icon name="account" size="20" :color="iconColors.account"></up-icon>
+						</view>
+						<text class="menu-text">编辑资料</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 					</view>
-					<text class="menu-text">意见反馈</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					<view class="menu-item" @tap="goToSettings">
+						<view class="menu-icon">
+							<up-icon name="setting" size="20" :color="iconColors.setting"></up-icon>
+						</view>
+						<text class="menu-text">应用设置</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					</view>
+					<view class="menu-item" @tap="toggleNotification">
+						<view class="menu-icon">
+							<up-icon name="bell" size="20" :color="iconColors.bell"></up-icon>
+						</view>
+						<text class="menu-text">消息推送</text>
+						<up-switch 
+							v-model="settings.notification" 
+							size="20"
+							:active-color="switchActiveColor">
+						</up-switch>
+					</view>
 				</view>
-				<view class="menu-item" @tap="goToAbout">
-					<view class="menu-icon">
-						<up-icon name="info-circle" size="20" :color="iconColors.infoCircle"></up-icon>
+				
+				<!-- 其他选项 -->
+				<view class="menu-group">
+					<view class="group-title">其他</view>
+					<view class="menu-item" @tap="shareApp">
+						<view class="menu-icon">
+							<up-icon name="share" size="20" :color="iconColors.share"></up-icon>
+						</view>
+						<text class="menu-text">分享应用</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 					</view>
-					<text class="menu-text">关于我们</text>
-					<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					<view class="menu-item" @tap="goToFeedback">
+						<view class="menu-icon">
+							<up-icon name="chat" size="20" :color="iconColors.chat"></up-icon>
+						</view>
+						<text class="menu-text">意见反馈</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					</view>
+					<view class="menu-item" @tap="goToAbout">
+						<view class="menu-icon">
+							<up-icon name="info-circle" size="20" :color="iconColors.infoCircle"></up-icon>
+						</view>
+						<text class="menu-text">关于我们</text>
+						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
+					</view>
+				</view>
+				
+				<!-- 数据统计 -->
+				<view class="stats-section">
+					<view class="stats-title">本月数据</view>
+					<view class="stats-grid">
+						<view class="stats-card">
+							<up-icon name="camera" size="24" :color="iconColors.statsCamera"></up-icon>
+							<text class="stats-number">{{ monthStats.uploads }}</text>
+							<text class="stats-label">上传图片</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="eye" size="24" :color="iconColors.eye"></up-icon>
+							<text class="stats-number">{{ monthStats.views }}</text>
+							<text class="stats-label">获得浏览</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="thumb-up" size="24" :color="iconColors.thumbUp"></up-icon>
+							<text class="stats-number">{{ monthStats.likes }}</text>
+							<text class="stats-label">获得点赞</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="heart" size="24" :color="iconColors.statsHeart"></up-icon>
+							<text class="stats-number">{{ monthStats.collects }}</text>
+							<text class="stats-label">被收藏</text>
+						</view>
+					</view>
 				</view>
 			</view>
 			
-			<!-- 数据统计 -->
-			<view class="stats-section">
-				<view class="stats-title">本月数据</view>
-				<view class="stats-grid">
-					<view class="stats-card">
-						<up-icon name="camera" size="24" :color="iconColors.statsCamera"></up-icon>
-						<text class="stats-number">{{ monthStats.uploads }}</text>
-						<text class="stats-label">上传图片</text>
-					</view>
-					<view class="stats-card">
-						<up-icon name="eye" size="24" :color="iconColors.eye"></up-icon>
-						<text class="stats-number">{{ monthStats.views }}</text>
-						<text class="stats-label">获得浏览</text>
-					</view>
-					<view class="stats-card">
-						<up-icon name="thumb-up" size="24" :color="iconColors.thumbUp"></up-icon>
-						<text class="stats-number">{{ monthStats.likes }}</text>
-						<text class="stats-label">获得点赞</text>
-					</view>
-					<view class="stats-card">
-						<up-icon name="heart" size="24" :color="iconColors.statsHeart"></up-icon>
-						<text class="stats-number">{{ monthStats.collects }}</text>
-						<text class="stats-label">被收藏</text>
-					</view>
-				</view>
+			<!-- 退出登录 -->
+			<view class="logout-section">
+				<up-button 
+					type="error" 
+					@click="logout"
+					:custom-style="logoutBtnStyle">
+					退出登录
+				</up-button>
 			</view>
-		</view>
-		
-		<!-- 退出登录 -->
-		<view class="logout-section">
-			<up-button 
-				type="error" 
-				@click="logout"
-				:custom-style="logoutBtnStyle">
-				退出登录
-			</up-button>
-		</view>
-		
-		<!-- 登录弹窗 -->
-		<up-popup closeable @click="close" :show="show" round="20">
-			<view class="popup">
-				<view class="title">获取您的昵称、头像</view>
-				<view class="flex">
-					<view class="label">获取用户头像</view>
-					<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
-						<image class="avatar" :src="userInfo.avatarUrl"></image>
-					</button>
+			
+			<!-- 登录弹窗 -->
+			<up-popup closeable @click="close" :show="show" round="20">
+				<view class="popup">
+					<view class="title">获取您的昵称、头像</view>
+					<view class="flex">
+						<view class="label">获取用户头像</view>
+						<button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
+							<image class="avatar" :src="userInfo.avatarUrl"></image>
+						</button>
+					</view>
+					<view class="flex">
+						<view class="label">获取用户昵称：</view>
+						<input @input="changeName" type="nickname">
+					</view>
+					<button size="default" type="primary" @click="userSubmit">确定</button>
 				</view>
-				<view class="flex">
-					<view class="label">获取用户昵称：</view>
-					<input @input="changeName" type="nickname">
-				</view>
-				<button size="default" type="primary" @click="userSubmit">确定</button>
-			</view>
-		</up-popup>
+			</up-popup>
+		</view>
 	</view>
 </template>
 
@@ -187,32 +200,11 @@
 import { ref, reactive } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 
-// 用户信息
-const userInfo = reactive({
-	nickName: 'KMeme用户',
-	description: '热爱摄影，记录美好生活',
-	avatarUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
-	uploadCount: 23,
-	collectCount: 47,
-	likeCount: 156
-})
-
-// 应用设置
-const settings = reactive({
-	notification: true,
-	autoSave: true,
-	highQuality: false
-})
-
-// 月度统计
-const monthStats = reactive({
-	uploads: 8,
-	views: 342,
-	likes: 89,
-	collects: 23
-})
-
 // 样式配置
+const BarBg = '#5e2ec0'
+// const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+const titleStyle = { color: "#fff", fontWeight: "bold" };
+const leftIconColor = "#fff";
 const iconColors = {
 	camera: '#fff',
 	menuCamera: '#6366f1',
@@ -239,6 +231,31 @@ const logoutBtnStyle = {
 	fontSize: '32rpx',
 	fontWeight: 'bold'
 }
+
+// 用户信息
+const userInfo = reactive({
+	nickName: 'KMeme用户',
+	description: '热爱摄影，记录美好生活',
+	avatarUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
+	uploadCount: 23,
+	collectCount: 47,
+	likeCount: 156
+})
+
+// 应用设置
+const settings = reactive({
+	notification: true,
+	autoSave: true,
+	highQuality: false
+})
+
+// 月度统计
+const monthStats = reactive({
+	uploads: 8,
+	views: 342,
+	likes: 89,
+	collects: 23
+})
 
 onLoad(async () => {
   loadUserData()
@@ -433,6 +450,12 @@ const logout = () => {
 	})
 }
 
+// 返回上一页
+const goBack = () => {
+  uni.switchTab({
+    url: "/pages/index/index",
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -440,6 +463,18 @@ const logout = () => {
 .mine-container {
 	min-height: 100vh;
 	background: #f8fafc;
+	.content {
+		position: absolute;
+		top: 150rpx; 
+		left: 0;
+		right: 0;
+		bottom: 0;
+	    padding: 20rpx;
+	    padding-top: 50rpx; // 给顶部导航栏留出空间
+	    padding-bottom: 100rpx;
+		overflow-y: scroll;
+		box-sizing: border-box;
+	}
 }
 
 // 用户头部

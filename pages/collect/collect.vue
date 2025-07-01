@@ -1,9 +1,11 @@
 <template>
   <view class="collect-container">
+	  
     <!-- 顶部导航 -->
+	<up-status-bar></up-status-bar>
     <up-navbar
       :border="false"
-      :bg-color="navBarBg"
+      :bg-color="BarBg"
       title="我的收藏"
       :title-style="titleStyle"
       :left-icon-color="leftIconColor"
@@ -201,7 +203,8 @@ const collectList = ref([]);
 const currentFilter = ref("all");
 
 // 样式配置
-const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+const BarBg = '#5e2ec0'
+// const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 const leftIconColor = "#fff";
 const iconColors = {
@@ -375,21 +378,28 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 .collect-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.content {
-  padding: 20rpx;
-  padding-top: 100rpx; // 给顶部导航栏留出空间
-  padding-bottom: 100rpx;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	.content {
+		position: absolute;
+		top: 150rpx; 
+		left: 0;
+		right: 0;
+		bottom: 0;
+	    padding: 20rpx;
+	    padding-top: 50rpx; // 给顶部导航栏留出空间
+	    padding-bottom: 100rpx;
+		overflow-y: scroll;
+		box-sizing: border-box;
+	}
+	
 }
 
 // 统计信息
 .stats-section {
-  display: flex;
-  gap: 20rpx;
-  margin-bottom: 30rpx;
+	display: flex;
+	gap: 20rpx;
+	margin-bottom: 30rpx;
 
   .stats-card {
     flex: 1;
