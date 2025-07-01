@@ -10,6 +10,7 @@
 			:border="false"
 			:bg-color="BarBg"
 			title="KMeme"
+			:left-icon-color="leftIconColor"
 			:title-style="titleStyle"
 		>
 		</up-navbar>
@@ -199,6 +200,7 @@ const albumList = ref([]);
 // 界面样式配置
 const BarBg = '#667eea';
 const titleStyle = { color: "#fff", fontWeight: "bold" };
+const leftIconColor = "transparent";
 
 // 功能导航图标颜色
 const navIconColors = {
