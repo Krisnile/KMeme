@@ -34,7 +34,8 @@
 			"path" : "pages/album/album",
 			"style": 
 			{
-			    "navigationBarTitleText": "加载中..."
+			    "navigationBarTitleText": "加载中...",
+				"navigationStyle": "custom"
 			}
 		},
 		{

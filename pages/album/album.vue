@@ -1,5 +1,18 @@
 <template>
-	<view class="album-box">
+	<view class="album-container">
+		<!-- 顶部导航 -->
+		<up-status-bar></up-status-bar>
+		<up-navbar
+		  :border="false"
+		  :bg-color="BarBg"
+		  :title="title.value"
+		  :title-style="titleStyle"
+		  :left-icon-color="leftIconColor"
+		  @leftClick="goBack"
+		>
+		</up-navbar>
+		
+		<view class="content">
  		<view class="list">
 			<up-waterfall v-model="flowList" ref="uWaterfallRef">
 				<template v-slot:left="{ leftList }">
@@ -46,6 +59,7 @@
 		<view v-if="showTopBtn" @click="toTop" class="topClass">
 			<up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
 		</view>
+		</view>
 	</view>
 </template>
 
@@ -59,16 +73,22 @@ const flowList = ref([]) // 瀑布流图像列表
 
 // 滚动是否显示 0不显示 1显示
 const showTopBtn = ref(0)
+
 // 样式配置
+const BarBg = '#5e2ec0'
+// const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+const titleStyle = { color: "#fff", fontWeight: "bold" };
+const leftIconColor = "#fff";
 const topBtnIconColor = '#ffffff'
 
 onLoad((options) => {
 	// 接收页面传参
 	const albumId = Number(options.id)
-	title.value = decodeURIComponent(options.title || '相册')
+	const decodedTitle = decodeURIComponent(options.title || '相册')
+	title.value = decodedTitle
 
 	// 设置页面标题
-	uni.setNavigationBarTitle({ title: title.value })
+	// uni.setNavigationBarTitle({ title: title.value })
 
     // 请求后端该相册的图像数据
 	getAlbumImages(albumId)
@@ -100,6 +120,13 @@ const toTop = () => {
 		duration: 300
 	})
 }
+
+// 返回上一页
+const goBack = () => {
+  uni.switchTab({
+    url: "/pages/index/index",
+  });
+};
 </script>
 
 <style>

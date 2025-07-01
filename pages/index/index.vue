@@ -222,17 +222,6 @@ const loadData = () => {
   });
 };
 
-// 搜索处理
-const handleSearch = () => {
-  if (keyword.value.trim()) {
-    uni.showToast({
-      title: `搜索: ${keyword.value}`,
-      icon: "none",
-    });
-    // 这里可以添加实际的搜索逻辑
-  }
-};
-
 // 点击相册跳转详情页
 const goToAlbum = (album) => {
   uni.navigateTo({
@@ -272,7 +261,7 @@ const goToMine = () => {
 
 // 监听滚动
 onPageScroll((e) => {
-  if (e.scrollTop > 600) {
+  if (e.scrollTop > 400) {
     showTopBtn.value = 1;
   } else {
     showTopBtn.value = 0;
