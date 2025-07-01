@@ -197,21 +197,21 @@
 	// 跳转到上传页面
 	const goToAdd = () => {
 		uni.switchTab({
-			url: 'pages/add/add'
+			url: '/pages/add/add'
 		})
 	}
 	
 	// 跳转到收藏页面
 	const goToCollect = () => {
 		uni.switchTab({
-			url: 'pages/collect/collect'
+			url: '/pages/collect/collect'
 		})
 	}
 	
 	// 跳转到个人中心
 	const goToMine = () => {
 		uni.switchTab({
-			url: 'pages/mine/mine'
+			url: '/pages/mine/mine'
 		})
 	}
 

@@ -65,17 +65,17 @@ const _sfc_main = {
     };
     const goToAdd = () => {
       common_vendor.index.switchTab({
-        url: "pages/add/add"
+        url: "/pages/add/add"
       });
     };
     const goToCollect = () => {
       common_vendor.index.switchTab({
-        url: "pages/collect/collect"
+        url: "/pages/collect/collect"
       });
     };
     const goToMine = () => {
       common_vendor.index.switchTab({
-        url: "pages/mine/mine"
+        url: "/pages/mine/mine"
       });
     };
     return (_ctx, _cache) => {
