@@ -6,8 +6,8 @@
       :border="false"
       :bg-color="BarBg"
       title="上传图片&新建相册"
-      title-style="color: black; font-weight: bold"
-      left-icon-color="black"
+      :title-style="titleStyle"
+      :left-icon-color="leftIconColor"
       @leftClick="goBack"
     >
     </up-navbar>

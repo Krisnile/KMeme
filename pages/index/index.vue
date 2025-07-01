@@ -7,6 +7,7 @@
 	    <up-status-bar></up-status-bar>
 		<!-- 顶部导航栏 -->
 		<up-navbar
+			:left-icon-color="leftIconColor"
 			:border="false"
 			:bg-color="BarBg"
 			title="KMeme"
@@ -199,6 +200,7 @@ const albumList = ref([]);
 // 界面样式配置
 const BarBg = '#5e2ec0';
 const titleStyle = { color: "#fff", fontWeight: "bold" };
+const leftIconColor = "transparent";
 
 // 功能导航图标颜色
 const navIconColors = {

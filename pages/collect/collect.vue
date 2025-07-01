@@ -7,8 +7,8 @@
       :border="false"
       :bg-color="BarBg"
       title="我的收藏"
-      title-style="color: black; font-weight: bold"
-      left-icon-color="black"
+      :title-style="titleStyle"
+      :left-icon-color="leftIconColor"
       @leftClick="goBack"
     >
     </up-navbar>
