@@ -330,7 +330,6 @@ const toTop = () => {
         bottom: 0;
         padding: 20rpx;
         padding-top: 50rpx; // 顶部导航预留空间
-        padding-bottom: 100rpx;
         box-sizing: border-box;
     }
 
