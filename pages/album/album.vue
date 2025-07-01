@@ -17,7 +17,9 @@
 			<up-waterfall v-model="flowList" ref="uWaterfallRef">
 				<template v-slot:left="{ leftList }">
 					<view class="demo-warter" v-for="(item,index) in leftList" :key="index">
-						<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
+						<view @tap="previewImage(leftList, index)">
+							<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
+						</view>
 						<view class="demo-title">
 							{{ item.title }}
 						</view>
@@ -36,7 +38,9 @@
 				</template>
 				<template v-slot:right="{ rightList }">
 					<view class="demo-warter" v-for="(item,index) in rightList" :key="index">
-						<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
+						<view @tap="previewImage(leftList, index)">
+							<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
+						</view>
 						<view class="demo-title">
 							{{ item.title }}
 						</view>
@@ -104,6 +108,15 @@ onLoad((options) => {
 		  })
     })
 })
+
+// 预览函数
+  const previewImage = (list, index) => {
+    const urls = list.map(item => item.img)
+    uni.previewImage({
+      urls,
+      current: urls[index]
+    })
+  }
 
 // 监听滚动
 onPageScroll((e) => {
