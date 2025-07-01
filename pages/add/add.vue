@@ -3,10 +3,10 @@
     <!-- 顶部导航 -->
     <up-navbar
       :border="false"
-      :bg-color="navBarBg"
+      bg-color="white"
       title="上传图片&新建相册"
-      :title-style="titleStyle"
-      :left-icon-color="leftIconColor"
+      title-style="color: black; font-weight: bold"
+      left-icon-color="black"
       @leftClick="goBack"
     >
     </up-navbar>
@@ -487,7 +487,6 @@ const goBack = () => {
 <style lang="scss" scoped>
 .upload-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .content {
