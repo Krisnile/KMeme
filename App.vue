@@ -13,5 +13,7 @@
 </script>
 
 <style>
-	/*每个页面公共css */
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
 </style>

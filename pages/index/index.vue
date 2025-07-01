@@ -1,9 +1,6 @@
 <template>
   <!-- 页面主体内容 -->
   <view class="content">
-    <!-- 顶部状态栏 -->
-    <!-- 		<up-status-bar></up-status-bar> -->
-
     <!-- 顶部导航栏 -->
     <view class="header">
       <view class="header-content">
@@ -277,16 +274,9 @@ const toTop = () => {
 };
 </script>
 
-<style>
-page {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-</style>
-
 <style lang="scss" scoped>
 .content {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 // 顶部导航栏

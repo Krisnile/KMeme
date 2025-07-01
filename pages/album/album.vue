@@ -102,12 +102,6 @@ const toTop = () => {
 }
 </script>
 
-<style>
-	page {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-</style>
-
 <style lang="scss" scoped>
 	.album-box {
 	  padding: 20rpx;
