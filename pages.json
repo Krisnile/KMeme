@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "KMeme"
+				"navigationBarTitleText": "KMeme",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -25,21 +26,24 @@
 			"path" : "pages/mine/mine",
 			"style" : 
 			{
-				"navigationBarTitleText" : "KMeme"
+				"navigationBarTitleText" : "个人中心",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path" : "pages/album/album",
 			"style": 
 			{
-			    "navigationBarTitleText": "加载中..."
+			    "navigationBarTitleText": "加载中...",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path" : "pages/search/search",
 			"style": 
 			{
-			    "navigationBarTitleText": "搜索"
+			    "navigationBarTitleText": "图片搜索",
+				"navigationStyle": "custom"
 			}
 		}
 	],

@@ -84,7 +84,7 @@ export default {
 			msg: '首页列表获取成功'
 		}
 	},
-	flowList: (albumId) => {
+	getAlbumImages: (albumId) => {
 		const allData = [
 			{
 				img: 'https://picsum.photos/id/1018/400/300',

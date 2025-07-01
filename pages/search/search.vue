@@ -1,7 +1,18 @@
 <template>
-	<view class="search-page">
+	<view class="search-container">
+		<!-- 顶部导航 -->
 		<up-status-bar></up-status-bar>
-
+		<up-navbar
+		  :border="false"
+		  :bg-color="BarBg"
+		  title="图片搜索"
+		  :title-style="titleStyle"
+		  :left-icon-color="leftIconColor"
+		  @leftClick="goBack"
+		>
+		</up-navbar>
+		
+		<view class="content">
 		<view class="search-header">
 			<up-search
 				placeholder="请输入关键词搜索..."
@@ -65,11 +76,18 @@
 			</template>
 		</view>
 	</view>
+	</view>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
+
+// 样式配置
+const BarBg = '#5e2ec0'
+// const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+const titleStyle = { color: "#fff", fontWeight: "bold" };
+const leftIconColor = "#fff";
 
 // 搜索关键词
 const keyword = ref('');
@@ -161,14 +179,33 @@ const goToAlbum = (album) => {
 		url: `/pages/album/album?id=${album.id}&title=${encodeURIComponent(album.title)}`
 	});
 };
+
+// 返回上一页
+const goBack = () => {
+  uni.switchTab({
+    url: "/pages/index/index",
+  });
+};
 </script>
 
 <style lang="scss" scoped>
-.search-page {
+.search-container {
 	min-height: 100vh;
 	background-color: #f5f5f5; // 页面背景色
 	display: flex;
 	flex-direction: column;
+	.content {
+		position: absolute;
+		top: 150rpx; 
+		left: 0;
+		right: 0;
+		bottom: 0;
+	    padding: 20rpx;
+	    padding-top: 50rpx; // 给顶部导航栏留出空间
+	    padding-bottom: 100rpx;
+		overflow-y: scroll;
+		box-sizing: border-box;
+	}
 }
 
 .search-header {
