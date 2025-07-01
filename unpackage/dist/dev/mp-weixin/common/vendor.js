@@ -7106,9 +7106,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "26.91.113.87,10.150.88.156,192.168.56.1,192.168.5.1,127.0.0.1";
+  const hosts = "26.91.113.87,192.168.56.1,192.168.5.1,192.168.71.111,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_tNNJr_";
+  const id = "mp-weixin_MqC0MT";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -15564,10 +15564,12 @@ const Mock = /* @__PURE__ */ getDefaultExportFromCjs(mockExports);
 const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
+const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
 const onPageScroll = /* @__PURE__ */ createHook(ON_PAGE_SCROLL);
 exports.Mock = Mock;
 exports._export_sfc = _export_sfc;
+exports.computed = computed;
 exports.createSSRApp = createSSRApp;
 exports.e = e;
 exports.f = f;
@@ -15577,6 +15579,7 @@ exports.nextTick$1 = nextTick$1;
 exports.o = o;
 exports.onLoad = onLoad;
 exports.onPageScroll = onPageScroll;
+exports.onShow = onShow;
 exports.p = p;
 exports.r = r;
 exports.reactive = reactive;
@@ -15586,4 +15589,5 @@ exports.s = s;
 exports.sr = sr;
 exports.t = t;
 exports.w = w;
+exports.watch = watch;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

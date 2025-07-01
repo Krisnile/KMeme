@@ -36,12 +36,41 @@ export const getAlbumImages = (albumId) => {
   }
 }
 
-// 登录
+// // 登录
+// export const login = (code) => {
+// 	return http('/login', { code }, 'POST')
+// }
+
+// //获取用户信息
+// export const getUserInfo = () => {
+// 	return http('/getUserInfo')
+// }
 export const login = (code) => {
-	return http('/login', { code }, 'POST')
+  if (isH5) {
+    return http({
+      url: '/login',
+      method: 'POST',
+      data: { code }
+    })
+  } else {
+    return Promise.resolve({
+      token: 'mocked_token_123456'
+    })
+  }
 }
 
-//获取用户信息
 export const getUserInfo = () => {
-	return http('/getUserInfo')
+  if (isH5) {
+    return http('/getUserInfo')
+  } else {
+    return Promise.resolve({
+      avatarUrl: '/static/catcats.jpg',
+      nickName: '测试用户'
+    })
+  }
+}
+
+// 我的收藏
+export const collectList = () => {
+	return http('/collect/list')
 }

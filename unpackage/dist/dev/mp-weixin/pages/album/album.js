@@ -13,15 +13,16 @@ const _easycom_up_icon = () => "../../uni_modules/uview-plus/components/u-icon/u
 if (!Math) {
   (_easycom_up_lazy_load + _easycom_up_waterfall + _easycom_up_icon)();
 }
+const topBtnIconColor = "#ffffff";
 const _sfc_main = {
   __name: "album",
   setup(__props) {
     const title = common_vendor.ref("相册");
     const flowList = common_vendor.ref([]);
+    const showTopBtn = common_vendor.ref(0);
     common_vendor.onLoad((options) => {
       const albumId = Number(options.id);
       title.value = decodeURIComponent(options.title || "相册");
-      const showTopBtn = common_vendor.ref(0);
       common_vendor.index.setNavigationBarTitle({ title: title.value });
       api_api.getAlbumImages(albumId).then((res) => {
         flowList.value = res.data || [];
@@ -31,14 +32,20 @@ const _sfc_main = {
           icon: "none"
         });
       });
-      common_vendor.onPageScroll((e) => {
-        if (e.scrollTop > 600) {
-          showTopBtn.value = 1;
-        } else {
-          showTopBtn.value = 0;
-        }
-      });
     });
+    common_vendor.onPageScroll((e) => {
+      if (e.scrollTop > 600) {
+        showTopBtn.value = 1;
+      } else {
+        showTopBtn.value = 0;
+      }
+    });
+    const toTop = () => {
+      common_vendor.index.pageScrollTo({
+        scrollTop: 0,
+        duration: 300
+      });
+    };
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.w(({
@@ -108,14 +115,14 @@ const _sfc_main = {
         e: common_vendor.p({
           modelValue: flowList.value
         }),
-        f: _ctx.showTopBtn
-      }, _ctx.showTopBtn ? {
+        f: showTopBtn.value
+      }, showTopBtn.value ? {
         g: common_vendor.p({
           name: "arrow-upward",
-          color: "#ffffff",
+          color: topBtnIconColor,
           size: "28"
         }),
-        h: common_vendor.o((...args) => _ctx.toTop && _ctx.toTop(...args))
+        h: common_vendor.o(toTop)
       } : {});
     };
   }
