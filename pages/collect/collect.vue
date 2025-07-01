@@ -203,7 +203,7 @@ const collectList = ref([]);
 const currentFilter = ref("all");
 
 // 样式配置
-const BarBg = '#5e2ec0'
+const BarBg = '#667eea'
 // const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 const leftIconColor = "#fff";
@@ -379,6 +379,7 @@ const goBack = () => {
 <style lang="scss" scoped>
 .collect-container {
     min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	.content {
 		position: absolute;
 		top: 150rpx; 
