@@ -108,6 +108,11 @@
 		    </view>
 		</view>
 		
+		<!-- 置顶按钮 -->
+		<view v-if="showTopBtn" @click="toTop" class="topClass">
+			<up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
+		</view>
+		
 		<!-- 上滑加载提示 -->
 		<view class="load-more" v-if="albumList.length > 0">
 			<up-line :color="lineColor" margin="20px 0"></up-line>
@@ -131,89 +136,110 @@
 </template>
 
 <script setup>
-	import { getBanner, getHomeList } from '../../api/api.js'
-	import { onLoad } from '@dcloudio/uni-app'
-	import{
-		ref,
-		reactive	
-	} from 'vue'
-	
-	const keyword = ref('')
-	// 轮播数据
-	const bannerList = ref([])
-	// 相册数据
-	const albumList = ref([])
-	// 样式配置
-	const headerIconColor = '#fff'
-	const navIconColors = {
-		camera: '#6366f1',
-		heart: '#ef4444',
-		account: '#10b981'
-	}
-	const albumIconColors = {
-		eye: '#fff',
-		tag: '#8b5cf6',
-		thumbUp: '#6b7280'
-	}
-	const lineColor = '#e5e7eb'
-	
-	onLoad(() => {
-		loadData()
+import { getBanner, getHomeList } from '../../api/api.js'
+import { onLoad, onPageScroll } from '@dcloudio/uni-app'
+import{
+	ref,
+	reactive	
+} from 'vue'
+
+const keyword = ref('')
+// 轮播数据
+const bannerList = ref([])
+// 相册数据
+const albumList = ref([])
+// 样式配置
+const headerIconColor = '#fff'
+const navIconColors = {
+	camera: '#6366f1',
+	heart: '#ef4444',
+	account: '#10b981'
+}
+const albumIconColors = {
+	eye: '#fff',
+	tag: '#8b5cf6',
+	thumbUp: '#6b7280'
+}
+const lineColor = '#e5e7eb'
+
+// 滚动是否显示 0不显示 1显示
+const showTopBtn = ref(0)
+// 样式配置
+const topBtnIconColor = '#ffffff'
+
+onLoad(() => {
+	loadData()
+})
+
+// 加载数据
+const loadData = () => {
+	// 加载banner
+	getBanner().then(res => {
+		console.log(res, 'res')
+		bannerList.value = res.bannerList
 	})
 	
-	// 加载数据
-	const loadData = () => {
-		// 加载banner
-		getBanner().then(res => {
-			console.log(res, 'res')
-			bannerList.value = res.bannerList
+	// 加载相册列表
+	getHomeList().then(res => {
+		console.log(res, 'getHomeList')
+		albumList.value = res
+	})
+}
+
+// 搜索处理
+const handleSearch = () => {
+	if (keyword.value.trim()) {
+		uni.showToast({
+			title: `搜索: ${keyword.value}`,
+			icon: 'none'
 		})
-		
-		// 加载相册列表
-		getHomeList().then(res => {
-			console.log(res, 'getHomeList')
-			albumList.value = res
-		})
+		// 这里可以添加实际的搜索逻辑
 	}
-	
-	// 搜索处理
-	const handleSearch = () => {
-		if (keyword.value.trim()) {
-			uni.showToast({
-				title: `搜索: ${keyword.value}`,
-				icon: 'none'
-			})
-			// 这里可以添加实际的搜索逻辑
-		}
+}
+
+// 点击相册跳转详情页
+const goToAlbum = (album) => {
+	uni.navigateTo({
+		url: `/pages/album/album?id=${album.id}&title=${encodeURIComponent(album.title)}`
+	})
+}
+
+// 跳转到上传页面
+const goToAdd = () => {
+	uni.switchTab({
+		url: '/pages/add/add'
+	})
+}
+
+// 跳转到收藏页面
+const goToCollect = () => {
+	uni.switchTab({
+		url: '/pages/collect/collect'
+	})
+}
+
+// 跳转到个人中心
+const goToMine = () => {
+	uni.switchTab({
+		url: '/pages/mine/mine'
+	})
+}
+
+// 监听滚动
+onPageScroll((e) => {
+	if (e.scrollTop > 600) {
+		showTopBtn.value = 1
+	} else {
+		showTopBtn.value = 0
 	}
-	
-	// 点击相册跳转详情页
-	const goToAlbum = (album) => {
-		uni.navigateTo({
-			url: `/pages/album/album?id=${album.id}&title=${encodeURIComponent(album.title)}`
-		})
-	}
-	
-	// 跳转到上传页面
-	const goToAdd = () => {
-		uni.switchTab({
-			url: '/pages/add/add'
-		})
-	}
-	
-	// 跳转到收藏页面
-	const goToCollect = () => {
-		uni.switchTab({
-			url: '/pages/collect/collect'
-		})
-	}
-	
-	// 跳转到个人中心
-	const goToMine = () => {
-		uni.switchTab({
-			url: '/pages/mine/mine'
-		})
-	}
+})
+// 置顶效果
+const toTop = () => {
+	uni.pageScrollTo({
+		scrollTop: 0,
+		duration: 300
+	})
+}
 
 </script>
 
@@ -475,6 +501,27 @@
 			}
 		}
 	}
+	.topClass {
+		position: fixed;
+		bottom: 120rpx;
+		right: 30rpx;
+		background-color: rgba(0, 0, 0, 0.7);
+		padding: 20rpx;
+		width: 44rpx;
+		height: 44rpx;
+		border-radius: 40rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		backdrop-filter: blur(10px);
+		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+		transition: all 0.3s ease;
+		z-index: 999;
+		
+		&:active {
+			transform: scale(0.9);
+		}
+	}
 	
 	// 动画
 	@keyframes fadeInUp {
@@ -483,5 +530,6 @@
 			transform: translateY(0);
 		}
 	}
+	
 
 </style>

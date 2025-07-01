@@ -21,6 +21,7 @@ if (!Math) {
 }
 const headerIconColor = "#fff";
 const lineColor = "#e5e7eb";
+const topBtnIconColor = "#ffffff";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -37,16 +38,17 @@ const _sfc_main = {
       tag: "#8b5cf6",
       thumbUp: "#6b7280"
     };
+    const showTopBtn = common_vendor.ref(0);
     common_vendor.onLoad(() => {
       loadData();
     });
     const loadData = () => {
       api_api.getBanner().then((res) => {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:168", res, "res");
+        common_vendor.index.__f__("log", "at pages/index/index.vue:178", res, "res");
         bannerList.value = res.bannerList;
       });
       api_api.getHomeList().then((res) => {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:174", res, "getHomeList");
+        common_vendor.index.__f__("log", "at pages/index/index.vue:184", res, "getHomeList");
         albumList.value = res;
       });
     };
@@ -76,6 +78,19 @@ const _sfc_main = {
     const goToMine = () => {
       common_vendor.index.switchTab({
         url: "/pages/mine/mine"
+      });
+    };
+    common_vendor.onPageScroll((e) => {
+      if (e.scrollTop > 600) {
+        showTopBtn.value = 1;
+      } else {
+        showTopBtn.value = 0;
+      }
+    });
+    const toTop = () => {
+      common_vendor.index.pageScrollTo({
+        scrollTop: 0,
+        duration: 300
       });
     };
     return (_ctx, _cache) => {
@@ -168,9 +183,18 @@ const _sfc_main = {
           color: albumIconColors.thumbUp
         }),
         t: common_vendor.t(Math.floor(Math.random() * 100) + 10),
-        v: albumList.value.length > 0
-      }, albumList.value.length > 0 ? {
+        v: showTopBtn.value
+      }, showTopBtn.value ? {
         w: common_vendor.p({
+          name: "arrow-upward",
+          color: topBtnIconColor,
+          size: "28"
+        }),
+        x: common_vendor.o(toTop)
+      } : {}, {
+        y: albumList.value.length > 0
+      }, albumList.value.length > 0 ? {
+        z: common_vendor.p({
           color: lineColor,
           margin: "20px 0"
         })
@@ -179,5 +203,6 @@ const _sfc_main = {
   }
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-1cf27b2a"]]);
+_sfc_main.__runtimeHooks = 1;
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/index/index.js.map

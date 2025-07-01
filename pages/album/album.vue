@@ -42,6 +42,7 @@
 				</template>
 			</up-waterfall>
 		</view>
+		<!-- 置顶按钮 -->
 		<view v-if="showTopBtn" @click="toTop" class="topClass">
 			<up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
 		</view>
