@@ -15589,4 +15589,5 @@ exports.s = s;
 exports.sr = sr;
 exports.t = t;
 exports.w = w;
+exports.watch = watch;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

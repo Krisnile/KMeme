@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "上传图片",
+  "navigationBarTitleText": "上传图片&新建相册",
   "navigationStyle": "custom",
   "usingComponents": {
     "up-navbar": "../../uni_modules/uview-plus/components/u-navbar/u-navbar",

@@ -2,7 +2,7 @@
 	<!-- 页面主体内容 -->
 	<view class="content">
 		<!-- 顶部状态栏 -->
-		<up-status-bar></up-status-bar>
+<!-- 		<up-status-bar></up-status-bar> -->
 		
 		<!-- 顶部导航栏 -->
 		<view class="header">
@@ -17,16 +17,14 @@
 			</view>
 		</view>
 		
-		<!-- 搜索栏 -->
-		<view class="search-container">
-			<up-search 
-				placeholder="搜索你喜欢的图片..." 
-				bg-color="rgba(255,255,255,0.9)" 
-				v-model="keyword"
-				shape="round"
+		<!-- 搜索栏：跳转搜索页 -->
+		<view class="search-container" @tap="goToSearchPage">
+			<up-search
+				placeholder="搜索你喜欢的图片..."
+				bg-color="rgba(255,255,255,0.9)"
 				:show-action="false"
-				@search="handleSearch"
-				@custom="handleSearch">
+				:disabled="true"
+				>
 			</up-search>
 		</view>
 		
@@ -68,7 +66,7 @@
 		
 		<!-- 相册列表标题 -->
 		<view class="section-title">
-			<text class="title-text">精选相册</text>
+			<text class="title-text">我的相册</text>
 			<view class="title-line"></view>
 		</view>
 		
@@ -203,6 +201,14 @@ const goToAlbum = (album) => {
 		url: `/pages/album/album?id=${album.id}&title=${encodeURIComponent(album.title)}`
 	})
 }
+
+// 跳转到搜索页面
+const goToSearchPage = () => {
+	uni.navigateTo({
+		url: '/pages/search/search'
+	})
+}
+
 
 // 跳转到上传页面
 const goToAdd = () => {

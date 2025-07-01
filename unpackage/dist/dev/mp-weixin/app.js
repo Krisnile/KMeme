@@ -14,6 +14,7 @@ if (!Math) {
   "./pages/mine/mine.js";
   "./pages/album/album.js";
   "./pages/profile/profile.js";
+  "./pages/search/search.js";
 }
 const _sfc_main = {
   onLaunch: function() {

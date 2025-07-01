@@ -9,7 +9,7 @@
 		{
 		  "path": "pages/add/add",
 		  "style": {
-				"navigationBarTitleText": "上传图片",
+				"navigationBarTitleText": "上传图片&新建相册",
 				"navigationStyle": "custom"
 		  }
 		},
@@ -37,6 +37,13 @@
 		},
 		{
 			"path" : "pages/profile/profile",
+			"style": 
+			{
+			    "navigationBarTitleText": "加载中..."
+			}
+		},
+		{
+			"path" : "pages/search/search",
 			"style": 
 			{
 			    "navigationBarTitleText": "加载中..."
