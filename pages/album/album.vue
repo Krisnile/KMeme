@@ -5,7 +5,7 @@
 		<up-navbar
 		  :border="false"
 		  :bg-color="BarBg"
-		  :title="title.value"
+		  :title="title"
 		  :title-style="titleStyle"
 		  :left-icon-color="leftIconColor"
 		  @leftClick="goBack"
