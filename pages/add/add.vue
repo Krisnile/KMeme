@@ -393,6 +393,10 @@ const uploadImages = async () => {
       showCancel: false,
       confirmText: "返回首页",
       success: () => {
+        // 清空表单和图片列表
+        imageList.value = [];
+        clearForm();
+
         uni.switchTab({
           url: "/pages/index/index",
         });
