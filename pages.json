@@ -36,17 +36,10 @@
 			}
 		},
 		{
-			"path" : "pages/profile/profile",
-			"style": 
-			{
-			    "navigationBarTitleText": "加载中..."
-			}
-		},
-		{
 			"path" : "pages/search/search",
 			"style": 
 			{
-			    "navigationBarTitleText": "加载中..."
+			    "navigationBarTitleText": "搜索"
 			}
 		}
 	],

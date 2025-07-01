@@ -315,7 +315,7 @@ const goToMyUploads = () => {
 // 跳转到我的收藏
 const goToMyCollections = () => {
 	uni.switchTab({
-		url: 'pages/collect/collect'
+		url: '/pages/collect/collect'
 	})
 }
 
@@ -372,12 +372,6 @@ const userSubmit = () => {
 	uni.setStorageSync('userInfo', JSON.stringify(userInfo))
 	show.value = false
 	
-}
-
-const goToProfile = () => {
-	uni.navigateTo({ 
-		url: '/pages/profile/profile',
-	})
 }
 
 const onChooseavatar = (e) => {

@@ -4,7 +4,7 @@
     <up-navbar
       :border="false"
       :bg-color="navBarBg"
-      title="上传图片"
+      title="上传图片&新建相册"
       :title-style="titleStyle"
       :left-icon-color="leftIconColor"
       @leftClick="goBack"
