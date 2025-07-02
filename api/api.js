@@ -1,8 +1,9 @@
-import pageApi from './mockData/pageApi.js'
-import http from './http.js'
+import pageApi from "./mockData/pageApi.js";
+import http from "./http.js";
 
 // 小程序使用 mock 数据
-const isMock = process.env.NODE_ENV === 'development' && process.env.UNI_PLATFORM !== 'h5'
+const isMock =
+  process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM !== "h5";
 
 /* -------------------- index页面 --------------------*/
 
@@ -13,14 +14,14 @@ const isMock = process.env.NODE_ENV === 'development' && process.env.UNI_PLATFOR
  * @returns {Promise<Array>} Banner 数据。
  */
 export const getBanner = () => {
-	if (isMock) {
-		return Promise.resolve(pageApi.getBanner().data)
-	}
-	return http({
-		url: '/users/banners',
-		method: 'GET'
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.getBanner().data);
+  }
+  return http({
+    url: "/users/banners",
+    method: "GET",
+  });
+};
 
 /**
  * 获取首页列表数据。
@@ -29,14 +30,14 @@ export const getBanner = () => {
  * @returns {Promise<Array>} 首页列表数据。
  */
 export const getHomeList = (userId) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.getHomeList(userId).data)
-	}
-	return http({
-		url: '/user/getHomeList',
-		method: 'GET'
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.getHomeList(userId).data);
+  }
+  return http({
+    url: "/user/getHomeList",
+    method: "GET",
+  });
+};
 
 /* -------------------- search页面 --------------------*/
 
@@ -48,15 +49,15 @@ export const getHomeList = (userId) => {
  * @returns {Promise<Array>} 搜索图片数据。
  */
 export const searchImages = (keyword) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.searchImages(keyword).data)
-	}
-	return http({
-		url: '/search/images',
-		method: 'POST',
-		data: { keyword }
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.searchImages(keyword).data);
+  }
+  return http({
+    url: "/search/images",
+    method: "POST",
+    data: { keyword },
+  });
+};
 
 /* -------------------- ablum页面 --------------------*/
 
@@ -68,15 +69,15 @@ export const searchImages = (keyword) => {
  * @returns {Promise<Array>} 相册图片数据。
  */
 export const getAlbumImages = (albumId) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.getAlbumImages(albumId).data)
-	}
-	return http({
-		url: '/album/images',
-		method: 'POST',
-		data: { albumId }
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.getAlbumImages(albumId).data);
+  }
+  return http({
+    url: "/album/images",
+    method: "POST",
+    data: { albumId },
+  });
+};
 
 /**
  * 删除指定 ID 的图片。
@@ -86,15 +87,15 @@ export const getAlbumImages = (albumId) => {
  * @returns {Promise<Object>} 删除操作结果
  */
 export const deleteImage = (id) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.deleteImage(id))
-	}
-	return http({
-		url: '/image/delete',
-		method: 'POST',
-		data: { id }
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.deleteImage(id));
+  }
+  return http({
+    url: "/image/delete",
+    method: "POST",
+    data: { id },
+  });
+};
 
 /**
  * 收藏或取消收藏指定图片。
@@ -105,15 +106,15 @@ export const deleteImage = (id) => {
  * @returns {Promise<Object>} 收藏状态更新结果
  */
 export const toggleCollect = (id, status) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.toggleCollect(id, status))
-	}
-	return http({
-		url: '/image/toggleCollect',
-		method: 'POST',
-		data: { id, status }
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.toggleCollect(id, status));
+  }
+  return http({
+    url: "/image/toggleCollect",
+    method: "POST",
+    data: { id, status },
+  });
+};
 
 /**
  * 按指定键排序图片列表。
@@ -122,16 +123,16 @@ export const toggleCollect = (id, status) => {
  * @param {string} [key='title'] - 排序关键字，默认为 'title'。
  * @returns {Promise<Array>} 排序后的图片数组。
  */
-export const sortImages = (key = 'title') => {
-	if (isMock) {
-		return Promise.resolve(pageApi.sortImages(key).data)
-	}
-	return http({
-		url: '/image/sort',
-		method: 'POST',
-		data: { key }
-	})
-}
+export const sortImages = (key = "title") => {
+  if (isMock) {
+    return Promise.resolve(pageApi.sortImages(key).data);
+  }
+  return http({
+    url: "/image/sort",
+    method: "POST",
+    data: { key },
+  });
+};
 
 /* -------------------- mine页面 --------------------*/
 
@@ -143,15 +144,15 @@ export const sortImages = (key = 'title') => {
  * @returns {Promise<Object>} 登录结果，包含 token。
  */
 export const login = (code) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.login?.().data ?? {})
-	}
-	return http({
-		url: '/login',
-		method: 'POST',
-		data: { code }
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.login?.().data ?? {});
+  }
+  return http({
+    url: "/login",
+    method: "POST",
+    data: { code },
+  });
+};
 
 /**
  * 获取用户信息。
@@ -160,14 +161,14 @@ export const login = (code) => {
  * @returns {Promise<Object>} 用户信息。
  */
 export const getUserInfo = () => {
-	if (isMock) {
-		return Promise.resolve(pageApi.getUserInfo?.().data ?? {})
-	}
-	return http({
-		url: '/getUserInfo',
-		method: 'GET'
-	})
-}
+  if (isMock) {
+    return Promise.resolve(pageApi.getUserInfo?.().data ?? {});
+  }
+  return http({
+    url: "/getUserInfo",
+    method: "GET",
+  });
+};
 
 /* -------------------- collect页面 --------------------*/
 
@@ -178,14 +179,63 @@ export const getUserInfo = () => {
  * @returns {Promise<Array>} 收藏列表数据。
  */
 export const collectList = () => {
-	if (isMock) {
-		// 筛选已收藏的图片
-		const collected = pageApi.searchImages('').data.filter(item => item.isCollected === '已收藏')
-		return Promise.resolve(collected)
-	}
-	return http({
-		url: '/collect/list',
-		method: 'GET'
-	})
-}
+  if (isMock) {
+    // 筛选已收藏的图片
+    const collected = pageApi
+      .searchImages("")
+      .data.filter((item) => item.isCollected === "已收藏");
+    return Promise.resolve(collected);
+  }
+  return http({
+    url: "/collect/list",
+    method: "GET",
+  });
+};
 
+/* -------------------- add页面 --------------------*/
+
+/**
+ * 创建新相册。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {Object} albumData - 相册数据
+ * @param {string} albumData.title - 相册标题
+ * @param {string} albumData.description - 相册描述
+ * @param {string} albumData.tag - 相册标签
+ * @param {string} albumData.imgUrl - 相册封面图片URL
+ * @returns {Promise<Object>} 创建结果
+ */
+export const createAlbum = (albumData) => {
+  if (isMock) {
+    return Promise.resolve(pageApi.createAlbum(albumData));
+  }
+  return http({
+    url: "/album/create",
+    method: "POST",
+    data: albumData,
+  });
+};
+
+/**
+ * 上传图片到指定相册。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {Object} imageData - 图片数据
+ * @param {string} imageData.title - 图片标题
+ * @param {string} imageData.description - 图片描述
+ * @param {Array} imageData.tags - 图片标签数组
+ * @param {string} imageData.category - 图片分类
+ * @param {boolean} imageData.isPublic - 是否公开
+ * @param {Array} imageData.images - 图片文件路径数组
+ * @returns {Promise<Object>} 上传结果
+ */
+export const uploadImages = (imageData) => {
+  if (isMock) {
+    return Promise.resolve(pageApi.uploadImages(imageData));
+  }
+  return http({
+    url: "/images/upload",
+    method: "POST",
+    data: imageData,
+  });
+};
