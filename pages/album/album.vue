@@ -15,6 +15,7 @@
 		<view class="content">
  		<view class="list">
 			<up-waterfall v-model="flowList" ref="uWaterfallRef">
+				<!-- 左列 -->
 				<template v-slot:left="{ leftList }">
 					<view class="demo-warter" v-for="(item,index) in leftList" :key="index">
 						<view @tap="previewImage(leftList, index)">
@@ -36,9 +37,11 @@
 						</view>
 					</view>
 				</template>
+				
+				<!-- 右列 -->
 				<template v-slot:right="{ rightList }">
 					<view class="demo-warter" v-for="(item,index) in rightList" :key="index">
-						<view @tap="previewImage(leftList, index)">
+						<view @tap="previewImage(rightList, index)">
 							<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
 						</view>
 						<view class="demo-title">
@@ -70,7 +73,7 @@
 <script setup>
 import { ref } from 'vue'
 import { onLoad, onPageScroll } from '@dcloudio/uni-app'
-import { getAlbumImages } from '../../api/api.js' // 替换为你具体的接口
+import { getAlbumImages } from '../../api/api.js'
 
 const title = ref('相册')
 const flowList = ref([]) // 瀑布流图像列表
@@ -114,7 +117,11 @@ onLoad((options) => {
     const urls = list.map(item => item.img)
     uni.previewImage({
       urls,
-      current: urls[index]
+      current: urls[index],
+	  fail: (err) => {
+	  	console.error('预览失败:', err)
+	  	uni.showToast({ title: '预览失败', icon: 'none' })
+	  }
     })
   }
 

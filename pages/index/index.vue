@@ -121,7 +121,6 @@
 							></up-icon>
 						</view>
 					</view>
-					
 					<!-- 相册标题和标签 -->
 					<view class="album-info">
 						<text class="album-title">{{ album.title }}</text>
@@ -197,7 +196,9 @@ const bannerList = ref([]);
 const albumList = ref([]);
 
 // 界面样式配置
+// 状态栏背景色
 const BarBg = '#5e2ec0';
+// 标题样式
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 
 // 功能导航图标颜色
@@ -318,10 +319,10 @@ const toTop = () => {
 </script>
 
 <style lang="scss" scoped>
+// 页面容器样式
 .index-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    
     .content {
         position: absolute;
         top: 150rpx; 
@@ -449,8 +450,8 @@ const toTop = () => {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        margin: 0 20rpx 40rpx;
-        gap: 20rpx;
+        margin: 20rpx 40rpx;
+        gap: 10rpx;
 
         .album-item {
             width: calc(50% - 10rpx);
@@ -615,5 +616,4 @@ const toTop = () => {
         transform: translateY(0);
     }
 }
-
 </style>

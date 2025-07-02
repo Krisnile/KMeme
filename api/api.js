@@ -15,7 +15,7 @@ export const getBanner = () => {
 		return Promise.resolve(pageApi.getBanner().data)
 	}
 	return http({
-		url: '/user/getBanner',
+		url: '/users/banners',
 		method: 'GET'
 	})
 }
@@ -26,9 +26,9 @@ export const getBanner = () => {
  *
  * @returns {Promise<Array>} 首页列表数据。
  */
-export const getHomeList = () => {
+export const getHomeList = (userId) => {
 	if (isMock) {
-		return Promise.resolve(pageApi.getHomeList().data)
+		return Promise.resolve(pageApi.getHomeList(userId).data)
 	}
 	return http({
 		url: '/user/getHomeList',
@@ -45,13 +45,30 @@ export const getHomeList = () => {
  */
 export const getAlbumImages = (albumId) => {
 	if (isMock) {
-		
 		return Promise.resolve(pageApi.getAlbumImages(albumId))
 	}
 	return http({
 		url: '/album/images',
 		method: 'POST',
 		data: { albumId }
+	})
+}
+
+/**
+ * 获取搜索图片列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string} keyword - 关键词。
+ * @returns {Promise<Array>} 搜索图片数据。
+ */
+export const searchImages = (keyword) => {
+	if (isMock) {
+		return Promise.resolve(pageApi.searchImages(keyword))
+	}
+	return http({
+		url: '/search/images',
+		method: 'POST',
+		data: { keyword }
 	})
 }
 
