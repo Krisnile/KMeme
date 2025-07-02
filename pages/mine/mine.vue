@@ -51,7 +51,7 @@
 			<!-- 功能菜单 -->
 			<view class="menu-section">
 				<!-- 我的创作 -->
-				<view class="menu-group">
+				<!-- <view class="menu-group">
 					<view class="group-title">我的创作</view>
 					<view class="menu-item" @tap="goToMyUploads">
 						<view class="menu-icon">
@@ -80,7 +80,35 @@
 						<text class="menu-text">浏览历史</text>
 						<up-icon name="arrow-right" size="16" :color="iconColors.arrowRight"></up-icon>
 					</view>
+				</view> -->
+				
+				<!-- 数据统计 -->
+				<view class="stats-section">
+					<view class="stats-title">本月数据</view>
+					<view class="stats-grid">
+						<view class="stats-card">
+							<up-icon name="camera" size="24" :color="iconColors.statsCamera"></up-icon>
+							<text class="stats-number">{{ monthStats.uploads }}</text>
+							<text class="stats-label">上传图片</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="eye" size="24" :color="iconColors.eye"></up-icon>
+							<text class="stats-number">{{ monthStats.views }}</text>
+							<text class="stats-label">获得浏览</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="thumb-up" size="24" :color="iconColors.thumbUp"></up-icon>
+							<text class="stats-number">{{ monthStats.likes }}</text>
+							<text class="stats-label">获得点赞</text>
+						</view>
+						<view class="stats-card">
+							<up-icon name="heart" size="24" :color="iconColors.statsHeart"></up-icon>
+							<text class="stats-number">{{ monthStats.collects }}</text>
+							<text class="stats-label">被收藏</text>
+						</view>
+					</view>
 				</view>
+				
 				<!-- 设置选项 -->
 				<view class="menu-group">
 					<view class="group-title">设置</view>
@@ -137,32 +165,6 @@
 					</view>
 				</view>
 				
-				<!-- 数据统计 -->
-				<view class="stats-section">
-					<view class="stats-title">本月数据</view>
-					<view class="stats-grid">
-						<view class="stats-card">
-							<up-icon name="camera" size="24" :color="iconColors.statsCamera"></up-icon>
-							<text class="stats-number">{{ monthStats.uploads }}</text>
-							<text class="stats-label">上传图片</text>
-						</view>
-						<view class="stats-card">
-							<up-icon name="eye" size="24" :color="iconColors.eye"></up-icon>
-							<text class="stats-number">{{ monthStats.views }}</text>
-							<text class="stats-label">获得浏览</text>
-						</view>
-						<view class="stats-card">
-							<up-icon name="thumb-up" size="24" :color="iconColors.thumbUp"></up-icon>
-							<text class="stats-number">{{ monthStats.likes }}</text>
-							<text class="stats-label">获得点赞</text>
-						</view>
-						<view class="stats-card">
-							<up-icon name="heart" size="24" :color="iconColors.statsHeart"></up-icon>
-							<text class="stats-number">{{ monthStats.collects }}</text>
-							<text class="stats-label">被收藏</text>
-						</view>
-					</view>
-				</view>
 			</view>
 			
 			<!-- 退出登录 -->
