@@ -379,7 +379,7 @@ const goBack = () => {
 <style lang="scss" scoped>
 .collect-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
 	.content {
 		position: absolute;
 		top: 150rpx; 
