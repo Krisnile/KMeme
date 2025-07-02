@@ -30,7 +30,7 @@
 					<view class="user-details">
 						<text class="user-name">{{ userInfo.nickName }}</text>
 						<text class="user-desc">{{ userInfo.description }}</text>
-						<view class="user-stats">
+						<!-- <view class="user-stats">
 							<view class="stat-item">
 								<text class="stat-number">{{ userInfo.uploadCount }}</text>
 								<text class="stat-label">上传</text>
@@ -43,7 +43,7 @@
 								<text class="stat-number">{{ userInfo.likeCount }}</text>
 								<text class="stat-label">获赞</text>
 							</view>
-						</view>
+						</view> -->
 					</view>
 				</view>
 			</view>
@@ -482,16 +482,19 @@ const goBack = () => {
 // 用户头部
 .user-header {
 	position: relative;
-	height: 400rpx;
+	justify-content: center;
 	overflow: hidden;
 	
 	.user-bg {
 		position: absolute;
 		top: 0;
-		left: 0;
-		width: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 600rpx;
 		height: 100%;
-		background: #f8fafc;
+		margin: 0 auto;
+		border-radius: 16rpx;
+		z-index: 1;
 	}
 	
 	.user-info {
@@ -500,7 +503,13 @@ const goBack = () => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 60rpx 40rpx 40rpx;
+		padding: 40rpx 40rpx 20rpx;
+		max-width: 600rpx;
+		margin: 0 auto;
+		border-radius: 16rpx;
+		background: rgba(255, 255, 255, 0.1); 
+		backdrop-filter: blur(12rpx);
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
 		
 		
 		.avatar-section {
@@ -540,27 +549,27 @@ const goBack = () => {
 				margin-bottom: 30rpx;
 			}
 			
-			.user-stats {
-				display: flex;
-				gap: 60rpx;
+			// .user-stats {
+			// 	display: flex;
+			// 	gap: 60rpx;
 				
-				.stat-item {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					gap: 8rpx;
+			// 	.stat-item {
+			// 		display: flex;
+			// 		flex-direction: column;
+			// 		align-items: center;
+			// 		gap: 8rpx;
 					
-					.stat-number {
-						font-size: 32rpx;
-						font-weight: bold;
-					}
+			// 		.stat-number {
+			// 			font-size: 32rpx;
+			// 			font-weight: bold;
+			// 		}
 					
-					.stat-label {
-						font-size: 24rpx;
-						opacity: 0.9;
-					}
-				}
-			}
+			// 		.stat-label {
+			// 			font-size: 24rpx;
+			// 			opacity: 0.9;
+			// 		}
+			// 	}
+			// }
 		}
 	}
 }
