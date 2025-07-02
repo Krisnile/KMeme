@@ -260,88 +260,86 @@ const goBack = () => {
 // 页面容器样式
 .album-container {
 	padding: 20rpx;
+}
 
-	.content {
-		position: absolute;
-		top: 150rpx;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		padding: 50rpx;
-		overflow-y: scroll;
-		box-sizing: border-box;
-	}
+.content {
+	position: absolute;
+	top: 150rpx; 
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding-top: 20rpx;
+}
 
-	// 图片列表
-	.list {
-		margin: 30rpx 0;
+// 图片列表
+.list {
+	margin: 30rpx 0;
 
-		// 顶部搜索卡片
-		.demo-warter {
-			margin: 10rpx 10rpx 10rpx 0;
-			background-color: #fff;
-			border-radius: 16rpx;
-			padding: 16rpx;
-			position: relative;
+	// 顶部搜索卡片
+	.demo-warter {
+		margin: 10rpx 10rpx 10rpx 0;
+		background-color: #fff;
+		border-radius: 16rpx;
+		padding: 16rpx;
+		position: relative;
 
-			//搜索卡片标题
-			.demo-title {
-				font-size: 30rpx;
-				margin-top: 10rpx;
-				color: #303133;
-			}
-			
-			// 标签区域
-			.demo-tag {
+		//搜索卡片标题
+		.demo-title {
+			font-size: 30rpx;
+			margin-top: 10rpx;
+			color: #303133;
+		}
+		
+		// 标签区域
+		.demo-tag {
+			display: flex;
+			flex-wrap: wrap;
+			margin-top: 10rpx;
+			gap: 12rpx;
+
+			.demo-tag-owner {
+				border: 1px solid rgb(252, 163, 129);
+				color: #ffaa00;
+				font-size: 20rpx;
 				display: flex;
-				flex-wrap: wrap;
-				margin-top: 10rpx;
-				gap: 12rpx;
-
-				.demo-tag-owner {
-					border: 1px solid rgb(252, 163, 129);
-					color: #ffaa00;
-					font-size: 20rpx;
-					display: flex;
-					align-items: center;
-					padding: 4rpx 14rpx;
-					border-radius: 50rpx;
-				}
-
-				.demo-tag-text {
-					border: 1px solid #00aaff;
-					color: #00aaff;
-					font-size: 20rpx;
-					display: flex;
-					align-items: center;
-					padding: 4rpx 14rpx;
-					border-radius: 50rpx;
-				}
+				align-items: center;
+				padding: 4rpx 14rpx;
+				border-radius: 50rpx;
 			}
 
-			// 操作按钮组
-			.demo-actions {
+			.demo-tag-text {
+				border: 1px solid #00aaff;
+				color: #00aaff;
+				font-size: 20rpx;
 				display: flex;
-				gap: 100rpx;
+				align-items: center;
+				padding: 4rpx 14rpx;
+				border-radius: 50rpx;
+			}
+		}
 
-				// 左右按钮通用样式
-				.action-left,
-				.action-right {
-					font-size: 24rpx;
-					color: #888;
-					background-color: rgba(255, 255, 255, 0.9);
-					padding: 6rpx 16rpx;
-					border-radius: 20rpx;
-					box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-					width: 150rpx; 
-					text-align: center;
-					white-space: nowrap;
-				}
+		// 操作按钮组
+		.demo-actions {
+			display: flex;
+			gap: 100rpx;
 
-				// 右按钮额外样式
-				.action-right {
-					color: #999;
-				}
+			// 左右按钮通用样式
+			.action-left,
+			.action-right {
+				font-size: 24rpx;
+				color: #888;
+				background-color: rgba(255, 255, 255, 0.9);
+				padding: 6rpx 16rpx;
+				border-radius: 20rpx;
+				box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+				width: 150rpx; 
+				text-align: center;
+				white-space: nowrap;
+			}
+
+			// 右按钮额外样式
+			.action-right {
+				color: #999;
 			}
 		}
 	}
