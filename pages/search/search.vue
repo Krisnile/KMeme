@@ -57,10 +57,10 @@
 								<view @tap="previewImage(searchResults, index)">
 									<!-- 图片懒加载 -->
 									<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
-								</view>
-								<!-- 图片悬浮图标 -->
-								<view class="album-overlay">
-									<up-icon name="eye" size="20" color="#fff"></up-icon>
+									<!-- 图片悬浮图标 -->
+									<view class="album-overlay">
+										<up-icon name="eye" size="20" color="#fff"></up-icon>
+									</view>
 								</view>
 							</view>
 							<!-- 相册标题和标签 -->
@@ -149,7 +149,10 @@ onLoad((options) => {
  * 图片预览函数
  */
 const previewImage = (list, index) => {
-    const urls = list.map(item => item.img)
+	// 将响应式数组转为普通数组
+    const rawList = Array.isArray(list) ? [...list] : []; // 解包 proxy
+    const urls = rawList.map(item => item.img);
+	console.log('图片预览处理:', urls);
     uni.previewImage({
 		urls,
 		current: urls[index],
@@ -211,12 +214,15 @@ const handleSearch = () => {
 		searchImages(trimmedKeyword).then(res => {
 			if (res.code === 1 && Array.isArray(res.data)) {
 				searchResults.value = res.data;
+				console.log('加载数据:', searchResults.value);
 				uni.showToast({ title: `搜索到 ${searchResults.value.length} 条结果`, icon: 'none' });
 			} else {
 				searchResults.value = [];
+				console.error('无搜索结果');
 				uni.showToast({ title: '无搜索结果', icon: 'none' });
 			}
-		}).catch(() => {
+		}).catch(err => {
+			console.error('搜索失败:', err);
 			uni.showToast({ title: '搜索失败，请稍后重试', icon: 'error' });
 			searchResults.value = [];
 		}).finally(() => {
