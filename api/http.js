@@ -9,8 +9,9 @@ let baseUrl = ''
  */
 if (process.env.NODE_ENV === 'development') {
 	baseUrl = 'https://localhost:5173/api'
+	// baseUrl = 'http://192.168.71.112:8080'
 } else {
-	baseUrl = 'https://m1.apifoxmock.com/m1/4728220-0-default/api'
+	baseUrl = 'http://192.168.71.112:8080'
 }
 
 /**

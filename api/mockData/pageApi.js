@@ -20,7 +20,7 @@ export default {
 			msg: 'Banner获取成功'
 		}
 	},
-	getHomeList: () => {
+	getHomeList: (userId) => {
 		return {
 			code: 1,
 			data: [
@@ -90,49 +90,57 @@ export default {
 				img: 'https://picsum.photos/id/1018/400/300',
 				title: '清晨的森林',
 				tag: ['自然', '旅行'],
-				isCollected: '已收藏'
+				isCollected: '已收藏',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1015/400/300',
 				title: '城市夜景',
 				tag: ['城市', '灯光'],
-				isCollected: ''
+				isCollected: '',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1084/400/300',
 				title: '美食诱惑',
 				tag: ['美食', '餐厅'],
-				isCollected: '已收藏'
+				isCollected: '已收藏',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1069/400/300',
 				title: '科技创新',
 				tag: ['科技', '未来'],
-				isCollected: ''
+				isCollected: '',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1025/400/300',
 				title: '现代艺术',
 				tag: ['艺术', '设计'],
-				isCollected: '已收藏'
+				isCollected: '已收藏',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1024/400/300',
 				title: '野生动物',
 				tag: ['自然', '动物'],
-				isCollected: ''
+				isCollected: '',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1031/400/300',
 				title: '古老遗迹',
 				tag: ['历史', '探险'],
-				isCollected: ''
+				isCollected: '',
+				userId: 1
 			},
 			{
 				img: 'https://picsum.photos/id/1050/400/300',
 				title: '极限运动',
 				tag: ['运动', '挑战'],
-				isCollected: '已收藏'
+				isCollected: '已收藏',
+				userId: 1
 			}
 		];
 		
@@ -156,4 +164,88 @@ export default {
 			msg: '相册列表获取成功'
 		};
 	},
+	searchImages: (keyword) => {
+		const allData = [
+			{
+				img: 'https://picsum.photos/id/1018/400/300',
+				title: '清晨的森林',
+				tag: ['自然', '旅行'],
+				isCollected: '已收藏',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1015/400/300',
+				title: '城市夜景',
+				tag: ['城市', '灯光'],
+				isCollected: '',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1084/400/300',
+				title: '美食诱惑',
+				tag: ['美食', '餐厅'],
+				isCollected: '已收藏',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1069/400/300',
+				title: '科技创新',
+				tag: ['科技', '未来'],
+				isCollected: '',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1025/400/300',
+				title: '现代艺术',
+				tag: ['艺术', '设计'],
+				isCollected: '已收藏',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1024/400/300',
+				title: '野生动物',
+				tag: ['自然', '动物'],
+				isCollected: '',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1031/400/300',
+				title: '古老遗迹',
+				tag: ['历史', '探险'],
+				isCollected: '',
+				userId: 1,
+			},
+			{
+				img: 'https://picsum.photos/id/1050/400/300',
+				title: '极限运动',
+				tag: ['运动', '挑战'],
+				isCollected: '已收藏',
+				userId: 1,
+			}
+		];
+	
+		// 处理空关键词：直接返回空
+		if (!keyword || typeof keyword !== 'string' || keyword.trim() === '') {
+			return {
+				code: 1,
+				data: allData,
+				msg: '关键词为空，未返回任何数据'
+			};
+		}
+			
+		// 忽略大小写，模糊匹配 title 或 tag
+		const lowerKeyword = (keyword || '').toLowerCase();
+		
+		const filtered = allData.filter(item => {
+			const inTitle = item.title.toLowerCase().includes(lowerKeyword);
+			const inTags = item.tag.some(t => t.toLowerCase().includes(lowerKeyword));
+			return inTitle || inTags;
+		});
+	
+		return {
+			code: 1,
+			data: filtered,
+			msg: '搜索成功'
+		};
+	}
 }

@@ -462,6 +462,7 @@ const goBack = () => {
 
 .mine-container {
 	min-height: 100vh;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
 	.content {
 		position: absolute;
@@ -474,6 +475,7 @@ const goBack = () => {
 	    padding-bottom: 100rpx;
 		overflow-y: scroll;
 		box-sizing: border-box;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	}
 }
 
@@ -489,7 +491,7 @@ const goBack = () => {
 		left: 0;
 		width: 100%;
 		height: 100%;
-		
+		background: #f8fafc;
 	}
 	
 	.user-info {
@@ -499,6 +501,7 @@ const goBack = () => {
 		flex-direction: column;
 		align-items: center;
 		padding: 60rpx 40rpx 40rpx;
+		
 		
 		.avatar-section {
 			position: relative;
