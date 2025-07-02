@@ -25,25 +25,11 @@
 			@scroll="handleScroll"
 			ref="contentRef"
 		>
-			<!-- 搜索栏，点击进行搜索操作 -->
-			<view class="search-header">
-				<up-search
-					placeholder="请输入关键词搜索..."
-					v-model="keyword"
-					:show-action="true"
-					actionText="搜索"
-					shape="square"
-					height="20"
-					:animation="true"
-					@search="handleSearch"
-					@clear="handleClear"
-				></up-search>
-			</view>
 			
 			<!-- 统计信息栏 -->
 			<view class="stats-section">
 			    <view class="stats-card">
-					<view class="stats-number">{{ collectList.length }}</view>
+					<view class="stats-number">{{ searchResults.length }}</view>
 					<view class="stats-label">收藏图片</view>
 			    </view>
 			    <view class="stats-card">
@@ -56,13 +42,32 @@
 			    </view>
 			</view>
 
-			<!-- 筛选选项栏 -->
-			<!-- <view class="filter-section">
-				<view class="filter-title">
-					<up-icon name="funnel" size="18" :color="iconColors.funnel"></up-icon>
-					<text>筛选收藏</text>
+			<!-- 搜索筛选栏 -->
+			<view class="filter-section">
+				<!-- 搜索栏，点击进行搜索操作 -->
+				<view class="search-header">
+					<up-search
+						placeholder="请输入关键词搜索..."
+						bg-color="rgba(255,255,255,0.9)"
+						v-model="keyword"
+						:show-action="true"
+						actionText="搜索"
+						shape="square"
+						height="20"
+						:animation="true"
+						@search="handleSearch"
+						@clear="handleClear"
+					></up-search>
 				</view>
-				<view class="filter-tags">
+				<view class="filter-title">
+					<up-icon name="funnel" size="18" :color="iconColors?.funnel || '#333'"></up-icon>
+					<text>筛选标签</text>
+				</view>
+				<!-- 标签列表区域 -->
+				<view
+				  class="filter-tags"
+				  :class="{ collapsed: !showAllTags }"
+				>
 					<view
 					    class="filter-tag"
 					    :class="{ active: currentFilter === 'all' }"
@@ -80,7 +85,18 @@
 					    {{ tag }}
 					</view>
 			    </view>
-			</view> -->
+				<!-- 展开 / 收起 按钮 -->
+				<view class="toggle-btn" @tap="toggleShowTags">
+				  <text>{{ showAllTags ? '→ 收起 ←' : '← 展开更多 →' }}</text>
+				</view>
+			</view>
+			
+			
+			<!-- 搜索结果标题 -->
+			<view class="section-title">
+			    <text class="title-text">搜索结果</text>
+			    <view class="title-line"></view>
+			</view>
 			
 			<!-- 搜索结果区域 -->
 			<view class="search-results-container">
@@ -165,11 +181,18 @@ const BarBg = '#5e2ec0'
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 // 左侧图标颜色
 const leftIconColor = "#fff";
+const iconColors = {
+  funnel: "#6366f1",
+  heartFill: "#ef4444",
+  share: "#6366f1",
+};
 
 // 搜索关键词
 const keyword = ref('');
 // 搜索结果列表
 const searchResults = ref([]);
+// 过滤标签展开
+const showAllTags = ref(false);
 // 用户ID
 const userId = ref('');
 
@@ -186,6 +209,13 @@ onLoad((options) => {
 });
 
 /* ===================== 方法定义 ===================== */
+
+/**
+ * 过滤标签展开函数
+ */
+const toggleShowTags = () => {
+  showAllTags.value = !showAllTags.value;
+};
 
 /**
  * 标签函数
@@ -206,12 +236,34 @@ const availableFilters = computed(() => {
  */
 const filteredList = computed(() => {
   if (currentFilter.value === "all") {
-    return collectList.value;
+    return searchResults.value;
   }
-  return collectList.value.filter((item) =>
+  return searchResults.value.filter((item) =>
     item.tag.includes(currentFilter.value)
   );
 });
+
+// 
+/**
+ * 相册数量函数
+ * 获取收藏的相册数量
+ */
+const getCollectedAlbums = () => {
+  const albums = new Set();
+  searchResults.value.forEach((item) => {
+    item.tag.forEach((tag) => albums.add(tag));
+  });
+  return albums.size;
+};
+
+// 
+/**
+ * 标签总数函数
+ * 获取标签总数
+ */
+const getTotalTags = () => {
+  return availableFilters.value.length;
+};
 
 /**
  * 图片预览函数
@@ -346,19 +398,6 @@ const goBack = () => {
 	bottom: 0;
 	padding-top: 20rpx;
 }
-	
-// 顶部搜索栏
-.search-header {
-	position: sticky;
-	top: 20rpx;
-	z-index: 10;
-	margin: 0 20rpx 30rpx;
-	padding: 20rpx;
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20rpx;
-	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.08);
-	backdrop-filter: blur(10px);
-}
 
 // 统计信息
 .stats-section {
@@ -394,12 +433,24 @@ const goBack = () => {
 	}
 }
 
-// 筛选区域
+// 搜索筛选区域
+.search-header {
+	position: fix;
+	top: 20rpx;
+	z-index: 10;
+	margin-bottom: 20rpx;
+	padding: 20rpx;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 20rpx;
+	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.08);
+	backdrop-filter: blur(10px);
+}
+
 .filter-section {
 	background: rgba(255, 255, 255, 0.95);
 	border-radius: 16rpx;
 	padding: 30rpx;
-	margin-bottom: 30rpx;
+	margin-bottom: 10rpx;
 	backdrop-filter: blur(10px);
 	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
 
@@ -417,6 +468,11 @@ const goBack = () => {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 16rpx;
+		
+		&.collapsed {
+		    max-height: 60rpx; // 控制默认只显示一行
+		    overflow: hidden;
+		  }
 
 		.filter-tag {
 			padding: 12rpx 24rpx;
@@ -437,12 +493,43 @@ const goBack = () => {
 			}
 		}
 	}
+	
+	.toggle-btn {
+	  margin-top: 10rpx;
+	  font-size: 24rpx;
+	  color: #888;
+	  text-align: left;
+	}
+}
+
+// 搜索结果标题
+.section-title {
+	display: flex;
+	align-items: center;
+	margin: 10rpx 20rpx;
+
+	.title-text {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #fff;
+		margin-right: 20rpx;
+	}
+
+	.title-line {
+		flex: 1;
+		height: 2rpx;
+		background: linear-gradient(
+			90deg,
+			rgba(255, 255, 255, 0.5) 0%,
+			transparent 100%
+		);
+	}
 }
 
 // 搜索结果区域
 .search-results-container {
 	flex: 1; // 填充剩余空间
-	padding: 20rpx;
+	padding: 10rpx;
 	overflow-y: auto; // 允许内容滚动
 	
 	// 相册列表样式 (与首页相册列表样式保持一致，或根据需要调整)

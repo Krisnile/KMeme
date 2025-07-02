@@ -24,17 +24,6 @@
 			@scroll="handleScroll"
 			ref="contentRef"
 		>
-			<!-- 搜索栏，点击跳转到搜索页面 -->
-			<view class="search-container" @tap="goToSearchPage">
-				<up-search
-					placeholder="搜索你喜欢的图片..."
-					bg-color="rgba(255,255,255,0.9)"
-					:show-action="false"
-					:disabled="true"
-				>
-				</up-search>
-			</view>
-
 			<!-- 轮播图，只有当bannerList有内容时才显示 -->
 			<view class="swiper-container" v-if="bannerList.length">
 				<up-swiper
@@ -269,15 +258,6 @@ const goToAlbum = (album) => {
 };
 
 /**
- * 跳转到搜索页面
- */
-const goToSearchPage = () => {
-    uni.navigateTo({
-        url: "/pages/collect/collect",
-    });
-};
-
-/**
  * 跳转到上传页面（tab切换）
  */
 const goToAdd = () => {
@@ -344,14 +324,9 @@ const toTop = () => {
 	padding-top: 20rpx;
 }
 
-// 搜索容器
-.search-container {
-	padding: 20rpx;
-	margin-bottom: 20rpx;
-}
-
 // 轮播图容器
 .swiper-container {
+	padding-top: 20rpx;
 	margin: 0 20rpx 30rpx;
 	border-radius: 16rpx;
 	overflow: hidden;
