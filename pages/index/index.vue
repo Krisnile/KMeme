@@ -273,7 +273,7 @@ const goToAlbum = (album) => {
  */
 const goToSearchPage = () => {
     uni.navigateTo({
-        url: "/pages/search/search",
+        url: "/pages/collect/collect",
     });
 };
 
@@ -291,7 +291,7 @@ const goToAdd = () => {
  */
 const goToCollect = () => {
     uni.switchTab({
-        url: "/pages/collect/collect",
+        url: "/pages/image/image",
     });
 };
 
@@ -332,292 +332,260 @@ const toTop = () => {
 // 页面容器样式
 .index-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    .content {
-        position: absolute;
-        top: 150rpx; 
-        left: 0;
-        right: 0;
-        bottom: 0;
-        padding: 20rpx;
-        padding-top: 50rpx; // 顶部导航预留空间
-        box-sizing: border-box;
-    }
-
-    // 顶部导航栏
-    .header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 20rpx;
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            .logo-section {
-                display: flex;
-                align-items: center;
-                gap: 16rpx;
-
-                .app-title {
-                    font-size: 36rpx;
-                    font-weight: bold;
-                    color: #fff;
-                    letter-spacing: 2rpx;
-                }
-            }
-
-            .header-actions {
-                padding: 12rpx;
-                border-radius: 12rpx;
-                background: rgba(255, 255, 255, 0.1);
-            }
-        }
-    }
-
-    // 搜索容器
-    .search-container {
-        padding: 20rpx;
-        margin-bottom: 20rpx;
-    }
-
-    // 轮播图容器
-    .swiper-container {
-        margin: 0 20rpx 30rpx;
-        border-radius: 16rpx;
-        overflow: hidden;
-        box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
-    }
-
-    // 功能导航
-    .nav-container {
-        display: flex;
-        justify-content: space-around;
-        margin: 5rpx 20rpx 5rpx 30rpx;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 16rpx;
-        padding: 20rpx 20rpx;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12rpx;
-            transition: transform 0.2s ease;
-
-            &:active {
-                transform: scale(0.95);
-            }
-
-            .nav-icon {
-                width: 80rpx;
-                height: 80rpx;
-                border-radius: 50%;
-                background: #f8fafc;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-            }
-
-            .nav-text {
-                font-size: 24rpx;
-                color: #374151;
-                font-weight: 500;
-            }
-        }
-    }
-
-    // 标题区域
-    .section-title {
-        display: flex;
-        align-items: center;
-        margin: 10rpx 20rpx 10rpx 30rpx;
-
-        .title-text {
-            font-size: 32rpx;
-            font-weight: bold;
-            color: #fff;
-            margin-right: 20rpx;
-        }
-
-        .title-line {
-            flex: 1;
-            height: 2rpx;
-            background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.5) 0%,
-                transparent 100%
-            );
-        }
-    }
-
-    // 相册列表
-    .album-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        margin: 20rpx 40rpx;
-        gap: 10rpx;
-
-        .album-item {
-            width: calc(50% - 10rpx);
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16rpx;
-            overflow: hidden;
-            box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(30rpx);
-
-            &:active {
-                transform: scale(0.98) translateY(30rpx);
-            }
-
-            .album-image-container {
-                position: relative;
-                height: 240rpx;
-                overflow: hidden;
-
-                .album-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.3);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-
-                &:hover .album-overlay {
-                    opacity: 1;
-                }
-            }
-
-            .album-info {
-                padding: 24rpx;
-
-                .album-title {
-                    font-size: 28rpx;
-                    font-weight: 600;
-                    color: #1f2937;
-                    margin-bottom: 12rpx;
-                    display: block;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                .album-meta {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-
-                    .album-tag {
-                        display: flex;
-                        align-items: center;
-                        gap: 8rpx;
-                        font-size: 22rpx;
-                        color: #8b5cf6;
-                    }
-
-                    .album-stats {
-                        display: flex;
-                        align-items: center;
-                        gap: 6rpx;
-                        font-size: 22rpx;
-                        color: #6b7280;
-                    }
-                }
-            }
-        }
-    }
-
-    // 加载更多提示
-    .load-more {
-        margin: 0 40rpx 40rpx;
-        text-align: center;
-
-        .load-more-text {
-            font-size: 24rpx;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 20rpx;
-        }
-    }
-
-    // 页脚
-    .footer {
-        background: rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-
-        .footer-content {
-            text-align: center;
-            padding: 40rpx 20rpx;
-
-            .footer-copyright {
-                display: block;
-                font-size: 24rpx;
-                color: rgba(255, 255, 255, 0.8);
-                margin-bottom: 8rpx;
-            }
-
-            .footer-version {
-                display: block;
-                font-size: 22rpx;
-                color: rgba(255, 255, 255, 0.6);
-                margin-bottom: 20rpx;
-            }
-
-            .footer-links {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 16rpx;
-
-                .footer-link {
-                    font-size: 22rpx;
-                    color: rgba(255, 255, 255, 0.7);
-                }
-
-                .footer-divider {
-                    font-size: 22rpx;
-                    color: rgba(255, 255, 255, 0.5);
-                }
-            }
-        }
-    }
-
-    // 置顶按钮
-    .topClass {
-        position: fixed;
-        bottom: 120rpx;
-        right: 30rpx;
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 20rpx;
-        width: 44rpx;
-        height: 44rpx;
-        border-radius: 40rpx;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-        z-index: 999;
-
-        &:active {
-            transform: scale(0.9);
-        }
-    }
+	width: 100%;
 }
+
+.content {
+	position: absolute;
+	top: 150rpx; 
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding-top: 20rpx;
+}
+
+// 搜索容器
+.search-container {
+	padding: 20rpx;
+	margin-bottom: 20rpx;
+}
+
+// 轮播图容器
+.swiper-container {
+	margin: 0 20rpx 30rpx;
+	border-radius: 16rpx;
+	overflow: hidden;
+	box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+// 功能导航
+.nav-container {
+	display: flex;
+	justify-content: space-around;
+	margin: 10rpx 20rpx;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 16rpx;
+	padding: 20rpx 20rpx;
+	backdrop-filter: blur(10px);
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+
+	.nav-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 20rpx;
+		transition: transform 0.2s ease;
+
+		&:active {
+			transform: scale(0.95);
+		}
+
+		.nav-icon {
+			width: 80rpx;
+			height: 80rpx;
+			border-radius: 50%;
+			background: #f8fafc;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+		}
+
+		.nav-text {
+			font-size: 24rpx;
+			color: #374151;
+			font-weight: 500;
+		}
+	}
+}
+
+// 标题区域
+.section-title {
+	display: flex;
+	align-items: center;
+	margin: 10rpx 20rpx;
+
+	.title-text {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #fff;
+		margin-right: 20rpx;
+	}
+
+	.title-line {
+		flex: 1;
+		height: 2rpx;
+		background: linear-gradient(
+			90deg,
+			rgba(255, 255, 255, 0.5) 0%,
+			transparent 100%
+		);
+	}
+}
+
+// 相册列表
+.album-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 10rpx 20rpx;
+	gap: 10rpx;
+
+	.album-item {
+		width: calc(50% - 10rpx);
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: 16rpx;
+		overflow: hidden;
+		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+		transition: all 0.3s ease;
+		animation: fadeInUp 0.6s ease forwards;
+		opacity: 0;
+		transform: translateY(30rpx);
+
+		&:active {
+			transform: scale(0.98) translateY(30rpx);
+		}
+
+		.album-image-container {
+			position: relative;
+			height: 240rpx;
+			overflow: hidden;
+
+			.album-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(0, 0, 0, 0.3);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				opacity: 0;
+				transition: opacity 0.3s ease;
+			}
+
+			&:hover .album-overlay {
+				opacity: 1;
+			}
+		}
+
+		.album-info {
+			padding: 24rpx;
+
+			.album-title {
+				font-size: 28rpx;
+				font-weight: 600;
+				color: #1f2937;
+				margin-bottom: 12rpx;
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.album-meta {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				.album-tag {
+					display: flex;
+					align-items: center;
+					gap: 8rpx;
+					font-size: 22rpx;
+					color: #8b5cf6;
+				}
+
+				.album-stats {
+					display: flex;
+					align-items: center;
+					gap: 6rpx;
+					font-size: 22rpx;
+					color: #6b7280;
+				}
+			}
+		}
+	}
+}
+
+// 加载更多提示
+.load-more {
+	margin: 0 40rpx 40rpx;
+	text-align: center;
+
+	.load-more-text {
+		font-size: 24rpx;
+		color: rgba(255, 255, 255, 0.7);
+		margin-top: 20rpx;
+	}
+}
+
+// 页脚
+.footer {
+	background: rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+
+	.footer-content {
+		text-align: center;
+		padding: 40rpx 20rpx;
+
+		.footer-copyright {
+			display: block;
+			font-size: 24rpx;
+			color: rgba(255, 255, 255, 0.8);
+			margin-bottom: 8rpx;
+		}
+
+		.footer-version {
+			display: block;
+			font-size: 22rpx;
+			color: rgba(255, 255, 255, 0.6);
+			margin-bottom: 20rpx;
+		}
+
+		.footer-links {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 16rpx;
+
+			.footer-link {
+				font-size: 22rpx;
+				color: rgba(255, 255, 255, 0.7);
+			}
+
+			.footer-divider {
+				font-size: 22rpx;
+				color: rgba(255, 255, 255, 0.5);
+			}
+		}
+	}
+}
+
+// 置顶按钮
+.topClass {
+	position: fixed;
+	bottom: 120rpx;
+	right: 30rpx;
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 20rpx;
+	width: 44rpx;
+	height: 44rpx;
+	border-radius: 40rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(10px);
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+	z-index: 999;
+
+	&:active {
+		transform: scale(0.9);
+	}
+}
+
 
 // 动画效果
 @keyframes fadeInUp {

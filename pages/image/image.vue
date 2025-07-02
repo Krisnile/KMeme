@@ -1,5 +1,5 @@
 <template>
-	<view class="search-container">
+	<view class="image-container">
 		
 		<!-- ================== 页面顶部内容 ================== -->
 
@@ -9,7 +9,7 @@
 		<up-navbar
 		  :border="false"
 		  :bg-color="BarBg"
-		  title="图片搜索"
+		  title="我的收藏"
 		  :title-style="titleStyle"
 		  :left-icon-color="leftIconColor"
 		  @leftClick="goBack"
@@ -33,13 +33,55 @@
 					:show-action="true"
 					actionText="搜索"
 					shape="square"
-					height="40"
+					height="20"
 					:animation="true"
 					@search="handleSearch"
 					@clear="handleClear"
 				></up-search>
 			</view>
+			
+			<!-- 统计信息栏 -->
+			<view class="stats-section">
+			    <view class="stats-card">
+					<view class="stats-number">{{ collectList.length }}</view>
+					<view class="stats-label">收藏图片</view>
+			    </view>
+			    <view class="stats-card">
+					<view class="stats-number">{{ getCollectedAlbums() }}</view>
+					<view class="stats-label">相册数量</view>
+			    </view>
+			    <view class="stats-card">
+					<view class="stats-number">{{ getTotalTags() }}</view>
+					<view class="stats-label">标签种类</view>
+			    </view>
+			</view>
 
+			<!-- 筛选选项栏 -->
+			<!-- <view class="filter-section">
+				<view class="filter-title">
+					<up-icon name="funnel" size="18" :color="iconColors.funnel"></up-icon>
+					<text>筛选收藏</text>
+				</view>
+				<view class="filter-tags">
+					<view
+					    class="filter-tag"
+					    :class="{ active: currentFilter === 'all' }"
+					    @tap="setFilter('all')"
+					>
+					    全部
+					</view>
+					<view
+						v-for="tag in availableFilters"
+						:key="tag"
+						class="filter-tag"
+						:class="{ active: currentFilter === tag }"
+						@tap="setFilter(tag)"
+					>
+					    {{ tag }}
+					</view>
+			    </view>
+			</view> -->
+			
 			<!-- 搜索结果区域 -->
 			<view class="search-results-container">
 				<!-- 搜索结果不为空 -->
@@ -105,7 +147,7 @@
 
 <script setup>
 /* ===================== 依赖导入 ===================== */
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { searchImages } from '../../api/api.js';
 
@@ -144,6 +186,32 @@ onLoad((options) => {
 });
 
 /* ===================== 方法定义 ===================== */
+
+/**
+ * 标签函数
+ * 获取可用的筛选标签
+ */
+const availableFilters = computed(() => {
+    const tags = new Set();
+    searchResults.value.forEach((item) => {
+		item.tag.forEach((tag) => tags.add(tag));
+    });
+    return Array.from(tags);
+});
+
+// 
+/**
+ * 标签列表函数
+ * 筛选后的列表
+ */
+const filteredList = computed(() => {
+  if (currentFilter.value === "all") {
+    return collectList.value;
+  }
+  return collectList.value.filter((item) =>
+    item.tag.includes(currentFilter.value)
+  );
+});
 
 /**
  * 图片预览函数
@@ -265,124 +333,204 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 // 页面容器样式
-.search-container {
+.image-container {
 	min-height: 100vh;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.content {
+	position: absolute;
+	top: 150rpx; 
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding-top: 20rpx;
+}
+	
+// 顶部搜索栏
+.search-header {
+	position: sticky;
+	top: 20rpx;
+	z-index: 10;
+	margin: 0 20rpx 30rpx;
+	padding: 20rpx;
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 20rpx;
+	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.08);
+	backdrop-filter: blur(10px);
+}
+
+// 统计信息
+.stats-section {
 	display: flex;
-	flex-direction: column;
-	.content {
-		position: absolute;
-		top: 150rpx; 
-		left: 0;
-		right: 0;
-		bottom: 0;
-	    padding: 20rpx;
-	    padding-top: 50rpx; // 给顶部导航栏留出空间
-		box-sizing: border-box;
-	}
-	
-	// 顶部搜索栏
-	.search-header {
+	justify-content: space-between;
+	margin: 20rpx;
+	gap: 20rpx;
+
+	.stats-card {
+		flex: 1;
 		background-color: #fff;
-		padding: 10rpx;
-		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-		z-index: 10; // 确保搜索栏在顶部
-		border-radius: 16rpx;
-	}
-	
-	// 搜索结果区域
-	.search-results-container {
-		flex: 1; // 填充剩余空间
-		padding: 20rpx;
-		overflow-y: auto; // 允许内容滚动
-		
-		// 相册列表样式 (与首页相册列表样式保持一致，或根据需要调整)
-		.album-list {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: space-between;
-			gap: 10rpx;
-			
-			// 相册卡片项
-			.album-item {
-				width: calc(50% - 10rpx);
-				background: #fff;
-				border-radius: 16rpx;
-				overflow: hidden;
-				box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
-				transition: all 0.3s ease;
-				animation: fadeInUp 0.6s ease forwards;
-				opacity: 0;
-				transform: translateY(30rpx);
-			
-				&:active {
-					transform: scale(0.98) translateY(30rpx);
-				}
-				
-				// 图片容器
-				.album-image-container {
-					position: relative;
-					height: 240rpx;
-					overflow: hidden;
-				
-					.album-overlay {
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
-						background: rgba(0, 0, 0, 0.3);
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						opacity: 0;
-						transition: opacity 0.3s ease;
-					}
-				
-					&:hover .album-overlay {
-						opacity: 1;
-					}
-				}
-				
-				// 文本信息
-				.album-info {
-					padding: 24rpx;
-				
-					.album-title {
-						font-size: 28rpx;
-						font-weight: 600;
-						color: #1f2937;
-						margin-bottom: 12rpx;
-						display: block;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
-				
-					.album-meta {
-						display: flex;
-						justify-content: space-between;
-						align-items: center;
-				
-						.album-tag {
-							display: flex;
-							align-items: center;
-							gap: 8rpx;
-							font-size: 22rpx;
-							color: #8b5cf6;
-						}
-				
-						.album-stats {
-							display: flex;
-							align-items: center;
-							gap: 6rpx;
-							font-size: 22rpx;
-							color: #6b7280;
-						}
-					}
-				}
-			}	
+		border-radius: 24rpx;
+		box-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.05);
+		padding: 30rpx 20rpx;
+		text-align: center;
+		transition: transform 0.2s;
+
+		&:hover {
+			transform: translateY(-6rpx);
 		}
+
+		.stats-number {
+			font-size: 40rpx;
+			font-weight: bold;
+			color: #007aff;
+			margin-bottom: 10rpx;
+		}
+
+		.stats-label {
+			font-size: 24rpx;
+			color: #666;
+		}
+	}
+}
+
+// 筛选区域
+.filter-section {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 16rpx;
+	padding: 30rpx;
+	margin-bottom: 30rpx;
+	backdrop-filter: blur(10px);
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+
+	.filter-title {
+		display: flex;
+		align-items: center;
+		gap: 12rpx;
+		margin-bottom: 20rpx;
+		font-size: 28rpx;
+		font-weight: bold;
+		color: #1f2937;
+	}
+
+	.filter-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16rpx;
+
+		.filter-tag {
+			padding: 12rpx 24rpx;
+			background: #f1f5f9;
+			border: 2rpx solid #e2e8f0;
+			border-radius: 50rpx;
+			font-size: 24rpx;
+			color: #64748b;
+			transition: all 0.2s ease;
+
+			&.active {
+				background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+				border-color: #6366f1;
+				color: #fff;
+			}
+			&:active {
+				transform: scale(0.95);
+			}
+		}
+	}
+}
+
+// 搜索结果区域
+.search-results-container {
+	flex: 1; // 填充剩余空间
+	padding: 20rpx;
+	overflow-y: auto; // 允许内容滚动
+	
+	// 相册列表样式 (与首页相册列表样式保持一致，或根据需要调整)
+	.album-list {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 10rpx;
+		
+		// 相册卡片项
+		.album-item {
+			width: calc(50% - 10rpx);
+			background: #fff;
+			border-radius: 16rpx;
+			overflow: hidden;
+			box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+			transition: all 0.3s ease;
+			animation: fadeInUp 0.6s ease forwards;
+			opacity: 0;
+			transform: translateY(30rpx);
+		
+			&:active {
+				transform: scale(0.98) translateY(30rpx);
+			}
+			
+			// 图片容器
+			.album-image-container {
+				position: relative;
+				height: 240rpx;
+				overflow: hidden;
+			
+				.album-overlay {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background: rgba(0, 0, 0, 0.3);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					opacity: 0;
+					transition: opacity 0.3s ease;
+				}
+			
+				&:hover .album-overlay {
+					opacity: 1;
+				}
+			}
+			
+			// 文本信息
+			.album-info {
+				padding: 24rpx;
+			
+				.album-title {
+					font-size: 28rpx;
+					font-weight: 600;
+					color: #1f2937;
+					margin-bottom: 12rpx;
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			
+				.album-meta {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+			
+					.album-tag {
+						display: flex;
+						align-items: center;
+						gap: 8rpx;
+						font-size: 22rpx;
+						color: #8b5cf6;
+					}
+			
+					.album-stats {
+						display: flex;
+						align-items: center;
+						gap: 6rpx;
+						font-size: 22rpx;
+						color: #6b7280;
+					}
+				}
+			}
+		}	
 	}
 }
 
