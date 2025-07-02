@@ -97,7 +97,7 @@
 			<view class="album-list">
 				<view
 					v-for="(album, index) in albumList"
-					:key="album.id"
+					:key="album.albumId"
 					class="album-item"
 					@tap="goToAlbum(album)"
 					:style="{ animationDelay: index * 0.1 + 's' }"
@@ -106,7 +106,7 @@
 					<view class="album-image-container">
 						<!-- 图片懒加载 -->
 						<up-lazy-load
-							:image="album.img"
+							:image="album.imgUrl"
 							:index="index"
 							threshold="-450"
 							border-radius="12"
@@ -236,19 +236,27 @@ onLoad(() => {
 /**
  * 加载轮播图和相册列表数据
  */
-const loadData = () => {
-    // 请求轮播图数据
-    getBanner().then((res) => {
-        console.log(res, "轮播图数据");
-        bannerList.value = res.bannerList;
-    });
+const loadData = async () => {
+	try {
+		// 请求轮播图数据
+		const bannerRes = await getBanner();
+		console.log("轮播图数据", bannerRes);
+		bannerList.value = bannerRes || [];
 
-    // 请求相册列表数据
-    getHomeList().then((res) => {
-        console.log(res, "相册列表数据");
-        albumList.value = res;
-    });
+		// 请求相册列表数据
+		const albumRes = await getHomeList();
+		console.log("相册列表数据", albumRes);
+		albumList.value = albumRes || [];
+
+	} catch (error) {
+		console.error("数据加载失败：", error);
+		uni.showToast({
+			title: "加载失败",
+			icon: "none"
+		});
+	}
 };
+
 
 /**
  * 点击相册跳转详情页

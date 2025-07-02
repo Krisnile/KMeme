@@ -4,6 +4,8 @@ import http from './http.js'
 // 小程序使用 mock 数据
 const isMock = process.env.NODE_ENV === 'development' && process.env.UNI_PLATFORM !== 'h5'
 
+/* -------------------- index页面 --------------------*/
+
 /**
  * 获取 Banner 列表。
  * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
@@ -36,23 +38,7 @@ export const getHomeList = (userId) => {
 	})
 }
 
-/**
- * 获取相册图片列表。
- * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
- *
- * @param {string} albumId - 相册 ID。
- * @returns {Promise<Array>} 相册图片数据。
- */
-export const getAlbumImages = (albumId) => {
-	if (isMock) {
-		return Promise.resolve(pageApi.getAlbumImages(albumId))
-	}
-	return http({
-		url: '/album/images',
-		method: 'POST',
-		data: { albumId }
-	})
-}
+/* -------------------- search页面 --------------------*/
 
 /**
  * 获取搜索图片列表。
@@ -63,7 +49,7 @@ export const getAlbumImages = (albumId) => {
  */
 export const searchImages = (keyword) => {
 	if (isMock) {
-		return Promise.resolve(pageApi.searchImages(keyword))
+		return Promise.resolve(pageApi.searchImages(keyword).data)
 	}
 	return http({
 		url: '/search/images',
@@ -71,6 +57,83 @@ export const searchImages = (keyword) => {
 		data: { keyword }
 	})
 }
+
+/* -------------------- ablum页面 --------------------*/
+
+/**
+ * 获取相册图片列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string} albumId - 相册 ID。
+ * @returns {Promise<Array>} 相册图片数据。
+ */
+export const getAlbumImages = (albumId) => {
+	if (isMock) {
+		return Promise.resolve(pageApi.getAlbumImages(albumId).data)
+	}
+	return http({
+		url: '/album/images',
+		method: 'POST',
+		data: { albumId }
+	})
+}
+
+/**
+ * 删除指定 ID 的图片。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string|number} id - 要删除的图片 ID。
+ * @returns {Promise<Object>} 删除操作结果
+ */
+export const deleteImage = (id) => {
+	if (isMock) {
+		return Promise.resolve(pageApi.deleteImage(id))
+	}
+	return http({
+		url: '/image/delete',
+		method: 'POST',
+		data: { id }
+	})
+}
+
+/**
+ * 收藏或取消收藏指定图片。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string|number} id - 图片 ID。
+ * @param {boolean} status - 收藏状态，true 为收藏，false 为取消收藏。
+ * @returns {Promise<Object>} 收藏状态更新结果
+ */
+export const toggleCollect = (id, status) => {
+	if (isMock) {
+		return Promise.resolve(pageApi.toggleCollect(id, status))
+	}
+	return http({
+		url: '/image/toggleCollect',
+		method: 'POST',
+		data: { id, status }
+	})
+}
+
+/**
+ * 按指定键排序图片列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {string} [key='title'] - 排序关键字，默认为 'title'。
+ * @returns {Promise<Array>} 排序后的图片数组。
+ */
+export const sortImages = (key = 'title') => {
+	if (isMock) {
+		return Promise.resolve(pageApi.sortImages(key).data)
+	}
+	return http({
+		url: '/image/sort',
+		method: 'POST',
+		data: { key }
+	})
+}
+
+/* -------------------- mine页面 --------------------*/
 
 /**
  * 用户登录。
@@ -81,7 +144,7 @@ export const searchImages = (keyword) => {
  */
 export const login = (code) => {
 	if (isMock) {
-		return Promise.resolve(pageApi.login().data)
+		return Promise.resolve(pageApi.login?.().data ?? {})
 	}
 	return http({
 		url: '/login',
@@ -98,13 +161,15 @@ export const login = (code) => {
  */
 export const getUserInfo = () => {
 	if (isMock) {
-		return Promise.resolve(pageApi.getUserInfo().data)
+		return Promise.resolve(pageApi.getUserInfo?.().data ?? {})
 	}
 	return http({
 		url: '/getUserInfo',
 		method: 'GET'
 	})
 }
+
+/* -------------------- collect页面 --------------------*/
 
 /**
  * 获取我的收藏列表。
@@ -114,10 +179,13 @@ export const getUserInfo = () => {
  */
 export const collectList = () => {
 	if (isMock) {
-		return Promise.resolve(pageApi.collectList().data)
+		// 筛选已收藏的图片
+		const collected = pageApi.searchImages('').data.filter(item => item.isCollected === '已收藏')
+		return Promise.resolve(collected)
 	}
 	return http({
 		url: '/collect/list',
 		method: 'GET'
 	})
 }
+

@@ -56,7 +56,7 @@
 								<!-- 图片预览 -->
 								<view @tap="previewImage(searchResults, index)">
 									<!-- 图片懒加载 -->
-									<up-lazy-load threshold="-450" border-radius="10" :image="item.img" :index="index"></up-lazy-load>
+									<up-lazy-load threshold="-450" border-radius="10" :image="item.imgUrl" :index="index"></up-lazy-load>
 									<!-- 图片悬浮图标 -->
 									<view class="album-overlay">
 										<up-icon name="eye" size="20" color="#fff"></up-icon>
@@ -151,7 +151,7 @@ onLoad((options) => {
 const previewImage = (list, index) => {
 	// 将响应式数组转为普通数组
     const rawList = Array.isArray(list) ? [...list] : []; // 解包 proxy
-    const urls = rawList.map(item => item.img);
+    const urls = rawList.map(item => item.imgUrl);
 	console.log('图片预览处理:', urls);
     uni.previewImage({
 		urls,
@@ -169,7 +169,7 @@ const previewImage = (list, index) => {
 const fetchImages = (kw) => {
     uni.showLoading({ title: '加载中...' });
     searchImages(kw).then(res => {
-        searchResults.value = res?.data || [];
+        searchResults.value = res || [];
         console.log('初始加载数据:', searchResults.value);
     }).catch(err => {
         console.error('初始图片加载失败:', err);
@@ -177,7 +177,6 @@ const fetchImages = (kw) => {
     }).finally(() => {
         uni.hideLoading(); // 结束时隐藏加载框
     });
-	
 };
 
 /**
@@ -204,30 +203,13 @@ const handleSearch = () => {
 			// 不在这里调用 handleClear，避免干扰用户输入
 			// handleClear();
 			uni.showToast({ title: '请输入关键词', icon: 'none' });
-						return;
 			return;
 		}
 
 		uni.showLoading({ title: '搜索中...' });
 		searchResults.value = [];
 
-		searchImages(trimmedKeyword).then(res => {
-			if (res.code === 1 && Array.isArray(res.data)) {
-				searchResults.value = res.data;
-				console.log('加载数据:', searchResults.value);
-				uni.showToast({ title: `搜索到 ${searchResults.value.length} 条结果`, icon: 'none' });
-			} else {
-				searchResults.value = [];
-				console.error('无搜索结果');
-				uni.showToast({ title: '无搜索结果', icon: 'none' });
-			}
-		}).catch(err => {
-			console.error('搜索失败:', err);
-			uni.showToast({ title: '搜索失败，请稍后重试', icon: 'error' });
-			searchResults.value = [];
-		}).finally(() => {
-			uni.hideLoading(); // 结束时隐藏加载框
-		});
+		fetchImages(trimmedKeyword);
 	}, 300); // 300ms 防抖时间
 };
 
