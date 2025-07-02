@@ -201,7 +201,7 @@ import { ref, reactive } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 
 // 样式配置
-const BarBg = '#5e2ec0'
+const BarBg = '#667eea'
 // const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 const leftIconColor = "#fff";
@@ -463,6 +463,7 @@ const goBack = () => {
 .mine-container {
 	min-height: 100vh;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
 	.content {
 		position: absolute;
 		top: 150rpx; 
@@ -676,147 +677,5 @@ const goBack = () => {
 .logout-section {
 	padding: 20rpx;
 	margin-bottom: 100rpx;
-}
-.content {
-	height: 100vh;
-	background-color: #f5f5f5;
-	.topBox {
-		width: 100%;
-		position: relative;
-		z-index: 1;
-		overflow: hidden;
-		padding: 40rpx 20rpx 40rpx;
-		box-sizing: border-box;
-	}
-	.topBox::after {
-		content: "";
-		width: 140%;
-		height: 200px;
-		position: absolute;
-		z-index: -1;
-		top: 0;
-		left: -20%;
-		background-color: #005588;
-		border-radius: 0 0 50% 50%;
-	}
-	.setBox {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		.set-left {
-			width: 18%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-		.txt {
-			color: #fff;
-			font-size: 30rpx;
-		}
-	}
-	.users {
-		margin-top: 35rpx;
-		padding: 30rpx;
-		box-sizing: border-box;
-		height: 280rpx;
-		background-color: #fff;
-		box-shadow: 1px 10rpx 20rpx #aceace;
-		border-radius: 16rpx;
-		.u-top {
-			display: flex;
-			justify-content: flex-start;
-			align-items: center;
-			margin-bottom: 30rpx;
-			image {
-				width: 100rpx;
-				height: 100rpx;
-				border-radius: 50%;
-				margin-right: 20rpx;
-			}
-			.tit {
-				font-size: 30rpx;
-				font-weight: 700;
-				color: #333;
-			}
-		}
-		.u-bottom {
-			display: flex;
-			justify-content: space-around;
-			align-items: center;
-			.u-item {
-				text-align: center;
-				.u-tit {
-					color: #757575;
-					font-size: 26rpx;
-					margin-top: 10rpx;
-				}
-				.num {
-					color: #000;
-					font-size: 33rpx;
-					font-weight: 700;
-				}
-			}
-		}
-	}
-	.listBox {
-		padding: 20rpx;
-		.section {
-			background-color: #fff;
-			border-radius: 16rpx;
-			padding: 20rpx;
-			margin-bottom: 20rpx;
-			.list {
-				display: flex;
-				flex-direction: column;
-				.row {
-					display: flex;
-					align-items: center;
-					padding: 20rpx 0;
-					border-bottom: 1px solid #eee;
-					&:last-child {
-						border-bottom: none;
-					}
-					.left {
-						display: flex;
-						align-items: center;
-					
-						.text {
-							margin-left: 20rpx;
-							font-size: 30rpx;
-							color: #333;
-						}
-					}
-				}
-			}
-		}
-	}
-	.popup {
-		padding: 20rpx;
-		border-radius: 20rpx 20rpx 0 0;
-		.title {
-			margin-bottom: 20rpx;
-			font-size: 40rpx;
-			text-align: center;
-		}
-		.flex {
-			display: flex;
-			justify-content: flex-start;
-			align-items: center;
-			border-bottom: 1px solid #f5f5f5;
-			padding: 24rpx 0;
-		}
-		image {
-			width: 70rpx;
-			height: 70rpx;
-		}
-		.avatar-warpper {
-			border: none;
-			border-radius: 10rpx;
-			width: 70rpx;
-			height: 70rpx;
-			margin-left: 20rpx;
-			padding: 0;
-		}
-	}
 }
 </style>

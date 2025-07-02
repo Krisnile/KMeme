@@ -82,7 +82,7 @@ const flowList = ref([]) // 瀑布流图像列表
 const showTopBtn = ref(0)
 
 // 样式配置
-const BarBg = '#5e2ec0'
+const BarBg = '#667eea'
 // const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 const leftIconColor = "#fff";
@@ -149,12 +149,6 @@ const goBack = () => {
   });
 };
 </script>
-
-<style>
-	page {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-</style>
 
 <style lang="scss" scoped>
 .album-container {
