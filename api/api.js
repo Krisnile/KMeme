@@ -1,6 +1,10 @@
 import pageApi from "./mockData/pageApi.js";
 import http from "./http.js";
 
+// 从 userInfo 中获取 ID
+const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
+const userId = storedUserInfo.id; 
+
 // 小程序使用 mock 数据
 const isMock = process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM == "h5";
 
@@ -26,14 +30,19 @@ export const getBanner = () => {
  * 获取首页列表数据。
  * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
  *
+ * @param {string} userId - 要获取数据的用户 ID。
  * @returns {Promise<Array>} 首页列表数据。
  */
 export const getHomeList = (userId) => {
+  if (!userId) {
+	console.error("getHomeList: userId 是必需参数！");
+	return Promise.reject(new Error("用户ID缺失，请先登录"));
+  }
   if (isMock) {
     return Promise.resolve(pageApi.getHomeList(userId).data);
   }
   return http({
-    url: "/user/getHomeList",
+    url: "/user/${userId}/getHomeList",
     method: "GET",
   });
 };
@@ -145,7 +154,7 @@ export const sortImages = (key = "title") => {
  */
 export const login = (code) => {
   if (isMock) {
-    return Promise.resolve(pageApi.login(code));
+    return Promise.resolve(pageApi.login(code).data);
   }
   return http({
     url: '/api/user/auth/wechat-login',
@@ -156,22 +165,27 @@ export const login = (code) => {
 
 /**
  * 保存用户资料接口
- * 将用户的头像和昵称保存到后端。
+ * 将用户的信息保存到后端。
  * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
  *
- * @param {Object} userInfo - 用户信息对象，包含 avatarUrl 和 nickName。
- * @param {string} userInfo.avatarUrl - 用户头像URL。
+ * @param {Object} userInfo - 用户信息对象。
+ * @param {number} userInfo.userId - 用户ID。
  * @param {string} userInfo.nickName - 用户昵称。
+ * @param {string} userInfo.description - 用户描述。
+ * @param {string} userInfo.avatarUrl - 用户头像URL。
+ * @param {number} userInfo.uploadCount - 用户下载数。
+ * @param {number} userInfo.collectCount - 用户收藏数。
+ * @param {number} userInfo.likeCount - 用户喜欢数。
  * @returns {Promise<Object>} 后端返回的响应数据。
  */
-export const saveUserInfo = ({ avatarUrl, nickName }) => {
+export const saveUserInfo = (userInfo) => {
   if (isMock) {
-    return Promise.resolve(pageApi.saveUserInfo({ avatarUrl, nickName }));
+    return Promise.resolve(pageApi.saveUserInfo(userInfo));
   }
   return http({
     url: '/user/save-profile', // 请替换为实际的保存用户资料接口路径
     method: 'POST',
-    data: { avatarUrl, nickName },
+    data: userInfo,
   });
 };
 

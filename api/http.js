@@ -9,9 +9,9 @@ let baseUrl = ''
  */
 if (process.env.NODE_ENV === 'development') {
 	// baseUrl = 'https://localhost:5173/api'
-	baseUrl = 'http://192.168.31.246:8080'
+	baseUrl = 'http://192.168.31.246:8080/api'
 } else {
-	baseUrl = 'http://192.168.71.112:8080'
+	baseUrl = 'http://192.168.71.112:8080/api'
 }
 
 /**
@@ -38,7 +38,7 @@ export default function http (options) {
 				// 检查 HTTP 状态码
 				if (res.statusCode === 200) {
 					// 检查业务状态码
-					if (res.data.code === 1) {
+					if (res.data.code === 1 || res.data.msg === "success") {
 						resolve(res.data.data) // 业务成功，返回数据
 					} else if (res.data.code === 0) {
 						uni.showToast({

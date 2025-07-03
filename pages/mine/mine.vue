@@ -245,6 +245,7 @@ const logoutBtnStyle = {
 
 // 用户信息
 const userInfo = reactive({
+	userId: -1,
 	nickName: 'KMeme用户',
 	description: '热爱摄影，记录美好生活',
 	avatarUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
@@ -378,25 +379,39 @@ const wechatLogin = async () => {
         try {
           // 通过 code 换 token
 		  console.log("js_code", loginRes.code);
-          const { token } = await login(loginRes.code);
-          uni.setStorageSync('token', token);
+          const loginResponseData  = await login(loginRes.code);
+		  console.log("login接口返回的原始数据:", loginResponseData);
+		  
+          // 存储 accessToken 字符串
+          uni.setStorageSync('token', loginResponseData.accessToken);
+          
+          // 存储 refreshToken 字符串，以备后续刷新使用
+          uni.setStorageSync('refreshToken', loginResponseData.refreshToken);
+
+		  // 存储用户ID等信息
+		  uni.setStorageSync('refreshToken', loginResponseData.userVO);
 
           // 获取用户微信头像昵称
           uni.getUserProfile({
             desc: '用于展示用户信息',
             success: async (profileRes) => {
               const { avatarUrl, nickName } = profileRes.userInfo;
+			  
+			  // 更新前端显示
+			  userInfo.avatarUrl = avatarUrl;
+			  userInfo.nickName = nickName;
+			  isGuest.value = false;
 
+			  // 如果 userInfo reactive 对象中也有 userId 字段，也在这里更新
+			  if (loginResponseData.userVO && loginResponseData.userVO.userId) {
+			  		userInfo.userId = loginResponseData.userVO.userId;
+			  }
+			  
+			  // 保存本地缓存
+			  uni.setStorageSync('userInfo', profileRes.userInfo);
+			  
               // 上传用户资料到后端
-              await saveUserInfo({ avatarUrl, nickName });
-
-              // 保存本地缓存
-              uni.setStorageSync('userInfo', profileRes.userInfo);
-
-              // 更新前端显示
-              userInfo.avatarUrl = avatarUrl;
-              userInfo.nickName = nickName;
-              isGuest.value = false;
+              await saveUserInfo(profileRes.userInfo);
 
               resolve(true);
             },
@@ -521,7 +536,7 @@ const shareApp = () => {
 const goToFeedback = () => {
 	uni.showModal({
 		title: '意见反馈',
-		content: '通过以下方式向我们反馈问题和建议：\n\nGitHub Issues：https://github.com/Krisnile/KMeme/issues',
+		content: '您可以通过以下链接向我们反馈：\n\nGitHub Issues：https://github.com/Krisnile/KMeme/issues',
 		showCancel: false
 	})
 }
