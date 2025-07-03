@@ -32,7 +32,7 @@ export const getBanner = () => {
 export const getHomeList = () => {
 	// 从 userInfo 中获取 ID
 	const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
-	const userId = storedUserInfo.id; 
+	const userId = storedUserInfo.id;
 	if (!userId) {
 		console.error("getHomeList: userId 是必需参数！");
 		return Promise.reject(new Error("用户ID缺失，请先登录"));
@@ -181,6 +181,7 @@ export const saveUserInfo = (userInfo) => {
   if (isMock) {
     return Promise.resolve(pageApi.saveUserInfo(userInfo));
   }
+  console.log("上传用户信息：", userInfo);
   return http({
     url: '/user/save-profile',
     method: 'POST',

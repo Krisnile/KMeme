@@ -241,11 +241,7 @@
           <view class="title">获取您的昵称、头像</view>
           <view class="flex">
             <view class="label">获取用户头像</view>
-            <button
-              class="avatar-warpper"
-              open-type="chooseAvatar"
-              @chooseavatar="onChooseavatar"
-            >
+            <button class="avatar-warpper" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
               <image class="avatar" :src="userInfo.avatarUrl"></image>
             </button>
           </view>
@@ -269,7 +265,6 @@ import { login, saveUserInfo } from "../../api/api.js";
 
 // 样式配置
 const BarBg = "#5e2ec0";
-// const navBarBg = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
 const titleStyle = { color: "#fff", fontWeight: "bold" };
 const leftIconColor = "#fff";
 const iconColors = {
@@ -386,22 +381,80 @@ const loadUserData = () => {
 // 弹出是否登录的确认框
 const askLogin = () => {
   uni.showModal({
-    title: "微信授权登录",
-    content: "我们将获取你的昵称与头像信息，用于账户识别",
+    title: "Ciallo～ (∠・ω< )⌒★",
+    content: "微信授权登录--我们将获取你的昵称与头像信息，用于账户识别",
     confirmText: "继续",
     success: async (res) => {
       if (res.confirm) {
         try {
-          await wechatLogin();
-          uni.showToast({ title: "登录成功", icon: "success" });
-          show.value = false;
-        } catch {
-          // 登录流程中断或失败，弹窗关闭
-          show.value = true;
+          const loginResult = await wechatLogin();
+
+          if (loginResult.isSuccess) {
+            // 登录（Token 交换）成功后，更新本地 reactive 的 userInfo
+            // 注意：此时 userInfo 里的头像和昵称还是默认值或旧值，
+            // 真实的头像昵称需要用户在弹窗里选择和输入
+
+            // 合并后端返回的 userVO 到 reactive 的 userInfo 中
+            userInfo.userId = loginResult.userVO.userId;
+
+            show.value = true;
+          } else {
+            uni.showToast({ title: '登录失败', icon: 'error' });
+          }
+
+        } catch (error) {
+          console.error("askLogin 流程中断或失败:", error);
+          uni.showToast({ title: '登录中断', icon: 'none' });
+          // 如果登录失败，保持弹窗关闭或根据需求处理
+          // show.value = false; // 如果你想失败就关闭弹窗
         }
       }
-    },
+    }
   });
+};
+
+// 提交登录
+const userSubmit = async () => {
+  if (!userInfo.nickName || !userInfo.avatarUrl) {
+    return uni.showToast({ title: '请填写完整信息', icon: 'none' });
+  }
+
+  try {
+      // 上传用户资料到后端，此时 userInfo 包含了从鉴权获取的 userId 和用户在前端选择的头像昵称
+      await saveUserInfo({
+        "userId": userInfo.userId, // userId
+        "nickName": userInfo.nickName,
+        "avatarUrl": userInfo.avatarUrl,
+        "description": userInfo.description, // 默认值
+        "uploadCount": userInfo.uploadCount,
+        "collectCount": userInfo.collectCount,
+        "likeCount": userInfo.likeCount,
+        // 包含 saveUserInfo 接口所需的所有字段
+      });
+
+      // 保存用户信息到本地缓存
+      uni.setStorageSync('userInfo', JSON.stringify({
+        userId: userInfo.userId,
+        nickName: userInfo.nickName,
+        description: userInfo.description,
+        avatarUrl: userInfo.avatarUrl,
+        uploadCount: userInfo.uploadCount,
+        collectCount: userInfo.collectCount,
+        likeCount: userInfo.likeCount,
+        // ... 所有持久化的 userInfo 字段
+      }));
+
+      // 更新登录状态
+      isGuest.value = false;
+      // 关闭弹窗
+      show.value = false;
+
+      uni.showToast({ title: '登录成功喵~', icon: 'success' });
+
+  } catch (error) {
+    console.error("登录保存用户资料失败:", error);
+    uni.showToast({ title: '呜哇,登录失败了！', icon: 'error' });
+  }
 };
 
 // 处理用户输入
@@ -410,21 +463,12 @@ const close = () => {
 };
 
 const onChooseavatar = (e) => {
+  // 用户选择头像后更新
   userInfo.avatarUrl = e.detail.avatarUrl;
 };
 const changeName = (e) => {
+  // 用户输入昵称后更新
   userInfo.nickName = e.detail.value;
-};
-
-// 提交登录
-const userSubmit = () => {
-  if (!userInfo.nickName || !userInfo.avatarUrl) {
-    return uni.showToast({ title: "请填写完整信息", icon: "none" });
-  }
-  uni.setStorageSync("userInfo", JSON.stringify(userInfo));
-  isGuest.value = false;
-  show.value = false;
-  uni.showToast({ title: "登录成功", icon: "success" });
 };
 
 const wechatLogin = async () => {
@@ -435,61 +479,24 @@ const wechatLogin = async () => {
             // 通过 code 换 token
             console.log("js_code", loginRes.code);
             const loginResponseData  = await login(loginRes.code);
-            console.log("login接口返回的原始数据:", loginResponseData);
 
             // 存储 accessToken 字符串
+            console.log("token:", loginResponseData.token);
             uni.setStorageSync('token', loginResponseData.accessToken);
 
             // 存储 refreshToken 字符串，以备后续刷新使用
             uni.setStorageSync('refreshToken', loginResponseData.refreshToken);
 
             // 存储用户VO信息
+            console.log("userVO:", loginResponseData.userVO);
             uni.setStorageSync('userVO', loginResponseData.userVO);
 
             const userVO = loginResponseData.userVO || {};
 
-            // 获取用户微信头像昵称
-            uni.getUserProfile({
-              desc: "用于展示用户信息",
-              success: async (profileRes) => {
-                const { avatarUrl, nickName } = profileRes.userInfo;
-
-                // 更新前端显示
-                userInfo.avatarUrl = avatarUrl;
-                userInfo.nickName = nickName;
-                isGuest.value = false;
-                userInfo.userId = userVO.userId;
-
-                // 保存本地缓存
-                uni.setStorageSync('userInfo', JSON.stringify({
-                  userId: userInfo.userId,
-                  nickName: userInfo.nickName,
-                  description: userInfo.description,
-                  avatarUrl: userInfo.avatarUrl,
-                  uploadCount: userInfo.uploadCount,
-                  collectCount: userInfo.collectCount,
-                  likeCount: userInfo.likeCount,
-                  // ... 所有持久化的 userInfo 字段
-                }));
-                console.log("本地缓存的 userInfo 对象:", userInfo); // reactive 对象
-
-                // 上传用户资料到后端
-                await saveUserInfo({
-                  userId: userInfo.userId, // 确保 userId 存在且正确
-                  nickName: userInfo.nickName,
-                  description: userInfo.description,
-                  avatarUrl: userInfo.avatarUrl,
-                  uploadCount: userInfo.uploadCount,
-                  collectCount: userInfo.collectCount,
-                  likeCount: userInfo.likeCount,
-                });
-
-                resolve(true);
-              },
-              fail: () => {
-                uni.showToast({ title: "用户取消授权", icon: "none" });
-                reject(new Error("用户取消授权"));
-              },
+            // console.log("登录用户Id:", userVO.userId)
+            resolve({
+              isSuccess: true, // 表示登录成功
+              userVO: userVO // 返回供后续处理
             });
           } catch (error) {
             console.error("登录流程失败:", error); // 打印详细错误信息
@@ -633,6 +640,7 @@ const logout = () => {
         uni.removeStorageSync('token');
         uni.removeStorageSync('refreshToken');
         uni.removeStorageSync('userInfo');
+        uni.removeStorageSync('userVO');
         userInfo.avatarUrl = 'https://cdn.uviewui.com/uview/album/1.jpg';
         userInfo.nickName = 'KMeme用户';
 
