@@ -49,10 +49,10 @@
 			</view>
 			
 			<!-- 登录模块 -->
-			<view class="user-auth-card" v-if="isGuest">
-			    <view class="auth-card-content">
-					<text>当前为游客模式，是否登录以保存收藏与历史？</text>
-					<button class="auth-button" @tap="onLoginClick">立即登录</button>
+			<view  class="login-card" v-if="isGuest">
+			    <view class="login-card-content">
+					<text>游客模式无法保存数据，是否同步用户数据到云端？</text>
+					<button class="login-button" @tap="askLogin">立刻登录</button>
 			    </view>
 			</view>
 
@@ -254,6 +254,8 @@ const userInfo = reactive({
 
 // 游客模式
 const isGuest = ref(!uni.getStorageSync('token'));
+// 控制 up-popup
+const show = ref(false);
 
 // 应用设置
 const settings = reactive({
@@ -272,62 +274,145 @@ const monthStats = reactive({
 
 onLoad(async () => {
   loadUserData()
-	// 免登录
-	if(uni.getStorageSync('token') && !uni.getStorageSync('userInfo')) {
-		const { avatarUrl, nickName } = await getUserInfo()
-		userInfo.avatarUrl = avatarUrl
-		userInfo.nickName = nickName
-	} else if(uni.getStorageSync('token') && uni.getStorageSync('userInfo')) {
-		const { avatarUrl, nickName } = JSON.parse(uni.getStorageSync('userInfo'))
-		userInfo.avatarUrl = avatarUrl
-		userInfo.nickName = nickName
-	}
 })
 
 onShow(() => {
 	refreshStats()
 })
 
-const onLoginClick = () => {
+/**
+ * 安全加载本地缓存的 userInfo
+ * @returns {object} 解析后的 userInfo 对象，或默认值
+ */
+function loadUserInfoFromStorage() {
+  const defaultUserInfo = {
+    avatarUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
+    nickName: 'KMeme用户'
+  };
+
+  const userInfoStr = uni.getStorageSync('userInfo');
+  if (!userInfoStr) {
+    return defaultUserInfo;
+  }
+
+  try {
+    const parsed = JSON.parse(userInfoStr);
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      parsed.avatarUrl &&
+      parsed.nickName
+    ) {
+      return parsed;
+    } else {
+      uni.removeStorageSync('userInfo');
+      return defaultUserInfo;
+    }
+  } catch (error) {
+    console.error('解析 userInfo 失败:', error);
+    uni.removeStorageSync('userInfo');
+    return defaultUserInfo;
+  }
+}
+
+
+// 加载用户数据
+const loadUserData = () => {
+	// 模拟从本地存储获取用户数据
+	console.log('加载用户数据')
+	const storedUserInfo = loadUserInfoFromStorage();
+	userInfo.avatarUrl = storedUserInfo.avatarUrl;
+	userInfo.nickName = storedUserInfo.nickName;
+}
+
+// 弹出是否登录的确认框
+const askLogin = () => {
   uni.showModal({
     title: '微信授权登录',
     content: '我们将获取你的昵称与头像信息，用于账户识别',
     confirmText: '继续',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        uni.login({
-          success: async (loginRes) => {
-            // 用 code 换 token
-            const { token } = await login(loginRes.code); // 重写 login 接口
-            uni.setStorageSync('token', token);
-
-            // 获取微信头像昵称
-            uni.getUserProfile({
-              desc: '用于展示用户信息',
-              success: async (profileRes) => {
-                const { avatarUrl, nickName } = profileRes.userInfo;
-                await saveUserInfo({ avatarUrl, nickName }); // 上传用户资料
-                uni.setStorageSync('userInfo', profileRes.userInfo);
-                userInfo.avatarUrl = avatarUrl;
-                userInfo.nickName = nickName;
-                isGuest.value = false;
-              },
-              fail: () => {
-                uni.showToast({ title: '用户取消授权', icon: 'none' });
-              }
-            });
-          }
-        });
+        try {
+          await wechatLogin();
+          uni.showToast({ title: '登录成功', icon: 'success' });
+          show.value = false;
+        } catch {
+          // 登录流程中断或失败，弹窗关闭
+          show.value = true;
+        }
       }
     }
   });
 };
 
-// 加载用户数据
-const loadUserData = () => {
-	// 模拟从本地存储或API获取用户数据
-	console.log('加载用户数据')
+// 处理用户输入
+const close = () => {
+	show.value = false
 }
+
+const onChooseavatar = (e) => {
+	userInfo.avatarUrl = e.detail.avatarUrl
+}
+const changeName = (e) => {
+	userInfo.nickName = e.detail.value
+}
+
+// 提交登录
+const userSubmit = () => {
+	if (!userInfo.nickName || !userInfo.avatarUrl) {
+		return uni.showToast({ title: '请填写完整信息', icon: 'none' });
+	}
+	uni.setStorageSync('userInfo', JSON.stringify(userInfo))
+	isGuest.value = false; 
+	show.value = false;
+	uni.showToast({ title: '登录成功', icon: 'success' });
+};
+
+const wechatLogin = async () => {
+  return new Promise((resolve, reject) => {
+    uni.login({
+      success: async (loginRes) => {
+        try {
+          // 通过 code 换 token
+          const { token } = await login(loginRes.code);
+          uni.setStorageSync('token', token);
+
+          // 获取用户微信头像昵称
+          uni.getUserProfile({
+            desc: '用于展示用户信息',
+            success: async (profileRes) => {
+              const { avatarUrl, nickName } = profileRes.userInfo;
+
+              // 上传用户资料到后端
+              await saveUserInfo({ avatarUrl, nickName });
+
+              // 保存本地缓存
+              uni.setStorageSync('userInfo', profileRes.userInfo);
+
+              // 更新前端显示
+              userInfo.avatarUrl = avatarUrl;
+              userInfo.nickName = nickName;
+              isGuest.value = false;
+
+              resolve(true);
+            },
+            fail: () => {
+              uni.showToast({ title: '用户取消授权', icon: 'none' });
+              reject(new Error('用户取消授权'));
+            }
+          });
+        } catch (error) {
+          reject(error);
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '登录失败，请重试', icon: 'error' });
+        reject(err);
+      }
+    });
+  });
+};
 
 // 刷新统计数据
 const refreshStats = () => {
@@ -429,23 +514,6 @@ const shareApp = () => {
 	})
 }
 
-const close = () => {
-	show.value = false
-}
-
-const userSubmit = () => {
-	uni.setStorageSync('userInfo', JSON.stringify(userInfo))
-	show.value = false
-	
-}
-
-const onChooseavatar = (e) => {
-	userInfo.avatarUrl = e.detail.avatarUrl
-}
-const changeName = (e) => {
-	userInfo.nickName = e.detail.value
-}
-
 // 意见反馈
 const goToFeedback = () => {
 	uni.showModal({
@@ -467,13 +535,14 @@ const goToAbout = () => {
 // 退出登录
 const logout = () => {
   uni.showModal({
-    title: '确认退出登录？',
+    title: '退出登录',
+	content: '确认退出当前登录吗？',
     success: (res) => {
       if (res.confirm) {
         uni.removeStorageSync('token');
         uni.removeStorageSync('userInfo');
-        userInfo.avatarUrl = '';
-        userInfo.nickName = '';
+        userInfo.avatarUrl = 'https://cdn.uviewui.com/uview/album/1.jpg';
+        userInfo.nickName = 'KMeme用户';
         isGuest.value = true;
         uni.showToast({ title: '已退出登录', icon: 'none' });
       }
@@ -607,25 +676,25 @@ const goBack = () => {
 }
 
 // 登录模块
-.user-auth-card {
+.login-card {
   margin: 20rpx;
   padding: 30rpx;
   background: #fff;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
   
-  .auth-card-content {
+  .login-content {
     display: flex;
     flex-direction: column;
+	font-size: 28rpx;
     align-items: center;
     gap: 20rpx;
 
     text {
-      font-size: 28rpx;
       color: #333;
     }
 
-    .auth-button {
+    .login-button {
       background-color: #2979ff;
       color: #fff;
       border-radius: 8rpx;
