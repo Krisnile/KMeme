@@ -33,7 +33,7 @@
           @tap="switchMode('album')"
         >
           <up-icon
-            name="folder-add"
+            name="grid"
             size="20"
             :color="currentMode === 'album' ? '#fff' : '#6366f1'"
           ></up-icon>
