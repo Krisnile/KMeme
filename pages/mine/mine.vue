@@ -684,11 +684,12 @@ const goBack = () => {
   border-radius: 16rpx;
   box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
   
-  .login-content {
+  .login-card-content {
     display: flex;
     flex-direction: column;
 	font-size: 28rpx;
     align-items: center;
+	text-align: center; 
     gap: 20rpx;
 
     text {
@@ -696,8 +697,9 @@ const goBack = () => {
     }
 
     .login-button {
-      background-color: #2979ff;
+      background-color: #5e2ec0;
       color: #fff;
+	  width: 100%;
       border-radius: 8rpx;
       padding: 10rpx 30rpx;
     }
