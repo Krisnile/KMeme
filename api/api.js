@@ -137,36 +137,94 @@ export const sortImages = (key = "title") => {
 /* -------------------- mine页面 --------------------*/
 
 /**
- * 用户登录。
+ * 微信登录接口
+ * 通过微信登录凭证换取后端的用户token。
  * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
  *
- * @param {string} code - 登录凭证。
- * @returns {Promise<Object>} 登录结果，包含 token。
+ * @param {string} code - 微信登录凭证。
+ * @returns {Promise<Object>} 包含用户token的Promise。
  */
 export const login = (code) => {
   if (isMock) {
-    return Promise.resolve(pageApi.login?.().data ?? {});
+    return Promise.resolve(pageApi.login(code));
   }
   return http({
-    url: "/login",
-    method: "POST",
+    url: '/auth/wechat-login', // 请替换为实际的登录接口路径
+    method: 'POST',
     data: { code },
   });
 };
 
 /**
- * 获取用户信息。
+ * 保存用户资料接口
+ * 将用户的头像和昵称保存到后端。
  * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
  *
- * @returns {Promise<Object>} 用户信息。
+ * @param {Object} userInfo - 用户信息对象，包含 avatarUrl 和 nickName。
+ * @param {string} userInfo.avatarUrl - 用户头像URL。
+ * @param {string} userInfo.nickName - 用户昵称。
+ * @returns {Promise<Object>} 后端返回的响应数据。
  */
-export const getUserInfo = () => {
+export const saveUserInfo = ({ avatarUrl, nickName }) => {
   if (isMock) {
-    return Promise.resolve(pageApi.getUserInfo?.().data ?? {});
+    return Promise.resolve(pageApi.saveUserInfo({ avatarUrl, nickName }));
   }
   return http({
-    url: "/getUserInfo",
-    method: "GET",
+    url: '/user/save-profile', // 请替换为实际的保存用户资料接口路径
+    method: 'POST',
+    data: { avatarUrl, nickName },
+  });
+};
+
+/**
+ * 获取月度统计数据。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @returns {Promise<Object>} 包含月度统计数据的Promise。
+ */
+export const getMonthStats = () => {
+  if (isMock) {
+    return Promise.resolve(pageApi.getMonthStats());
+  }
+  return http({
+    url: '/stats/month', // 替换为实际的月度统计接口路径
+    method: 'GET',
+  });
+};
+
+/**
+ * 获取我的上传列表。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {Object} [params={}] - 查询参数，例如 { page: 1, pageSize: 10 }。
+ * @returns {Promise<Array>} 包含我的上传图片的列表。
+ */
+export const getMyUploads = (params = {}) => {
+  if (isMock) {
+    return Promise.resolve(pageApi.getMyUploads(params));
+  }
+  return http({
+    url: '/user/uploads', // 替换为实际的我的上传接口路径
+    method: 'GET',
+    data: params,
+  });
+};
+
+/**
+ * 更新用户通知设置。
+ * 在 H5 开发环境会自动被 mock.js 拦截，其他环境（H5 生产和小程序）会发送真实请求。
+ *
+ * @param {Object} settings - 通知设置对象，例如 { notification: true }。
+ * @returns {Promise<Object>} 后端返回的响应。
+ */
+export const updateNotificationSettings = (settings) => {
+  if (isMock) {
+    return Promise.resolve(pageApi.updateNotificationSettings(settings));
+  }
+  return http({
+    url: '/user/settings/notification', // 替换为实际的更新通知设置接口路径
+    method: 'POST',
+    data: settings,
   });
 };
 

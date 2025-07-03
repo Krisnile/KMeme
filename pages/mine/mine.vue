@@ -207,8 +207,9 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { onLoad, onShow } from '@dcloudio/uni-app'
+import { ref, reactive } from "vue"
+import { onLoad, onShow } from "@dcloudio/uni-app";
+import { login, saveUserInfo } from "../../api/api.js";
 
 // 样式配置
 const BarBg = '#5e2ec0'
@@ -376,6 +377,7 @@ const wechatLogin = async () => {
       success: async (loginRes) => {
         try {
           // 通过 code 换 token
+		  console.log("js_code", loginRes.code);
           const { token } = await login(loginRes.code);
           uni.setStorageSync('token', token);
 
