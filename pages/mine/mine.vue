@@ -186,7 +186,7 @@
 			</view>
 			
 			<!-- 登录弹窗 -->
-			<up-popup closeable @click="close" :show="show" round="20">
+			<up-popup closeable @close="close" :show="show" round="20">
 				<view class="popup">
 					<view class="title">获取您的昵称、头像</view>
 					<view class="flex">
@@ -889,7 +889,7 @@ const goBack = () => {
 	font-size: 30rpx;
 	border-radius: 16rpx;
 	font-weight: 600;
-	background-color: #4caf50;
+	background-color: #5e2ec0;
 	color: #fff;
 	}
 	}
