@@ -443,50 +443,62 @@ const wechatLogin = async () => {
             // 存储 refreshToken 字符串，以备后续刷新使用
             uni.setStorageSync('refreshToken', loginResponseData.refreshToken);
 
-            // 存储用户ID等信息
-            uni.setStorageSync('refreshToken', loginResponseData.userVO);
+            // 存储用户VO信息
+            uni.setStorageSync('userVO', loginResponseData.userVO);
+
+            const userVO = loginResponseData.userVO || {};
 
             // 获取用户微信头像昵称
             uni.getUserProfile({
-            desc: "用于展示用户信息",
-            success: async (profileRes) => {
-              const { avatarUrl, nickName } = profileRes.userInfo;
+              desc: "用于展示用户信息",
+              success: async (profileRes) => {
+                const { avatarUrl, nickName } = profileRes.userInfo;
 
-			  // 更新前端显示
-			  userInfo.avatarUrl = avatarUrl;
-			  userInfo.nickName = nickName;
-			  isGuest.value = false;
-			  userInfo.userId = loginResponseData.userVO.userId;
+                // 更新前端显示
+                userInfo.avatarUrl = avatarUrl;
+                userInfo.nickName = nickName;
+                isGuest.value = false;
+                userInfo.userId = userVO.userId;
 
-			  // 保存本地缓存
-			  uni.setStorageSync('userInfo', JSON.stringify({
-				  userId: userInfo.userId,
-				  nickName: userInfo.nickName,
-				  description: userInfo.description,
-				  avatarUrl: userInfo.avatarUrl,
-				  uploadCount: userInfo.uploadCount,
-				  collectCount: userInfo.collectCount,
-				  likeCount: userInfo.likeCount,
-				  // ... 所有持久化的 userInfo 字段
-				}));
-			  console.log("本地缓存的 userInfo 对象:", userInfo); // reactive 对象
+                // 保存本地缓存
+                uni.setStorageSync('userInfo', JSON.stringify({
+                  userId: userInfo.userId,
+                  nickName: userInfo.nickName,
+                  description: userInfo.description,
+                  avatarUrl: userInfo.avatarUrl,
+                  uploadCount: userInfo.uploadCount,
+                  collectCount: userInfo.collectCount,
+                  likeCount: userInfo.likeCount,
+                  // ... 所有持久化的 userInfo 字段
+                }));
+                console.log("本地缓存的 userInfo 对象:", userInfo); // reactive 对象
 
-        // 上传用户资料到后端
-        await saveUserInfo(userInfo);
+                // 上传用户资料到后端
+                await saveUserInfo({
+                  userId: userInfo.userId, // 确保 userId 存在且正确
+                  nickName: userInfo.nickName,
+                  description: userInfo.description,
+                  avatarUrl: userInfo.avatarUrl,
+                  uploadCount: userInfo.uploadCount,
+                  collectCount: userInfo.collectCount,
+                  likeCount: userInfo.likeCount,
+                });
 
-              resolve(true);
-            },
-            fail: () => {
-              uni.showToast({ title: "用户取消授权", icon: "none" });
-              reject(new Error("用户取消授权"));
-            },
-          });
-        } catch (error) {
-          reject(error);
-        }
-      },
-      fail: (err) => {
-        uni.showToast({ title: "登录失败，请重试", icon: "error" });
+                resolve(true);
+              },
+              fail: () => {
+                uni.showToast({ title: "用户取消授权", icon: "none" });
+                reject(new Error("用户取消授权"));
+              },
+            });
+          } catch (error) {
+            console.error("登录流程失败:", error); // 打印详细错误信息
+            uni.showToast({ title: "登录失败，请重试", icon: "error" }); // 给用户提示
+            reject(error);
+          }
+        },
+        fail: (err) => {
+          uni.showToast({ title: "登录失败，请重试", icon: "error" });
         reject(err);
       },
     });
