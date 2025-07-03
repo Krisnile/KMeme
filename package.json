@@ -1,4 +1,41 @@
 {
+  "name": "kmeme",
+  "version": "1.0.0",
+  "description": "KMeme - 美图分享社区",
+  "main": "main.js",
+  "scripts": {
+    "dev": "npm run dev:h5",
+    "dev:h5": "uni build --watch",
+    "build": "npm run build:h5",
+    "build:h5": "uni build",
+    "lint": "eslint . --ext .vue,.js,.ts --fix",
+    "lint:check": "eslint . --ext .vue,.js,.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "npm run lint && npm run format"
+  },
+  "keywords": [
+    "vue",
+    "uni-app",
+    "meme",
+    "photo-sharing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.20.0",
+    "prettier": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "dependencies": {
     "clipboard": "^2.0.11",
     "dayjs": "^1.11.13",
