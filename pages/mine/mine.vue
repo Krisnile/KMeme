@@ -606,6 +606,35 @@ const goBack = () => {
 	}
 }
 
+// 登录模块
+.user-auth-card {
+  margin: 20rpx;
+  padding: 30rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
+  
+  .auth-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20rpx;
+
+    text {
+      font-size: 28rpx;
+      color: #333;
+    }
+
+    .auth-button {
+      background-color: #2979ff;
+      color: #fff;
+      border-radius: 8rpx;
+      padding: 10rpx 30rpx;
+    }
+  }
+}
+
+
 // 菜单区域
 .menu-section {
 	padding: 20rpx;
