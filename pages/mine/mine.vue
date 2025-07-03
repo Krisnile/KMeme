@@ -521,7 +521,7 @@ const shareApp = () => {
 const goToFeedback = () => {
 	uni.showModal({
 		title: '意见反馈',
-		content: '您可以通过邮箱 feedback@kmeme.com 向我们反馈问题和建议',
+		content: '通过以下方式向我们反馈问题和建议：\n\nGitHub Issues：https://github.com/Krisnile/KMeme/issues',
 		showCancel: false
 	})
 }
@@ -530,7 +530,7 @@ const goToFeedback = () => {
 const goToAbout = () => {
 	uni.showModal({
 		title: 'KMeme v1.0.0',
-		content: 'KMeme是一个专注于图片分享的社区平台，致力于让每个人都能发现和分享生活中的美好瞬间。',
+		content: '特别鸣谢：Krisnile Areufm',
 		showCancel: false
 	})
 }

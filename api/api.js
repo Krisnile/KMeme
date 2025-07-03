@@ -2,7 +2,7 @@ import pageApi from "./mockData/pageApi.js";
 import http from "./http.js";
 
 // 小程序使用 mock 数据
-const isMock = process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM !== "h5";
+const isMock = process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM == "h5";
 
 /* -------------------- index页面 --------------------*/
 
