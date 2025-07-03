@@ -51,7 +51,7 @@
 			<!-- 登录模块 -->
 			<view  class="login-card" v-if="isGuest">
 			    <view class="login-card-content">
-					<text>游客模式无法保存数据，是否同步用户数据到云端？</text>
+					<text>游客模式无法保存数据，是否上传同步到云端？</text>
 					<button class="login-button" @tap="askLogin">立刻登录</button>
 			    </view>
 			</view>
@@ -303,6 +303,7 @@ function loadUserInfoFromStorage() {
       parsed.avatarUrl &&
       parsed.nickName
     ) {
+		isGuest.value = false;
       return parsed;
     } else {
       uni.removeStorageSync('userInfo');
@@ -817,4 +818,80 @@ const goBack = () => {
 	padding: 20rpx;
 	margin-bottom: 100rpx;
 }
+
+// 登录弹窗区域
+.popup {
+  padding: 40rpx 30rpx ;
+  background-color: #fff;
+  border-radius: 24rpx;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+
+  .title {
+    font-size: 34rpx;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+  }
+
+  .flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20rpx;
+
+    .label {
+       font-size: 28rpx;
+	   color: #555;
+	   min-width: 200rpx;
+	   white-space: nowrap;
+    }
+
+    .avatar-warpper {
+	  width: 130rpx;
+	  height: 130rpx;
+	  border-radius: 50%;
+	  border: 2rpx solid #ddd;
+	  overflow: hidden;
+	  background-color: #f0f0f0;
+	  display: flex;
+	  padding: 0;
+	  align-items: center;
+	  justify-content: center;
+
+	  .avatar {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 50%;
+	  }
+	}
+
+	input[type="nickname"] {
+	  flex: 1;
+	  height: 64rpx;
+	  padding: 0 20rpx;
+	  font-size: 28rpx;
+	  border: 1rpx solid #ccc;
+	  border-radius: 12rpx;
+	  outline: none;
+	  background-color: #fafafa;
+	}
+	}
+
+	button[size="default"][type="primary"] {
+	width: 100%;
+	padding: 20rpx 0;
+	font-size: 30rpx;
+	border-radius: 16rpx;
+	font-weight: 600;
+	background-color: #4caf50;
+	color: #fff;
+	}
+	}
+
 </style>
