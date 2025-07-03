@@ -1,10 +1,6 @@
 import pageApi from "./mockData/pageApi.js";
 import http from "./http.js";
 
-// 从 userInfo 中获取 ID
-const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
-const userId = storedUserInfo.id; 
-
 // 小程序使用 mock 数据
 const isMock = process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM == "h5";
 
@@ -33,18 +29,21 @@ export const getBanner = () => {
  * @param {string} userId - 要获取数据的用户 ID。
  * @returns {Promise<Array>} 首页列表数据。
  */
-export const getHomeList = (userId) => {
-  if (!userId) {
-	console.error("getHomeList: userId 是必需参数！");
-	return Promise.reject(new Error("用户ID缺失，请先登录"));
-  }
-  if (isMock) {
-    return Promise.resolve(pageApi.getHomeList(userId).data);
-  }
-  return http({
-    url: "/user/${userId}/getHomeList",
-    method: "GET",
-  });
+export const getHomeList = () => {
+	// 从 userInfo 中获取 ID
+	const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
+	const userId = storedUserInfo.id; 
+	if (!userId) {
+		console.error("getHomeList: userId 是必需参数！");
+		return Promise.reject(new Error("用户ID缺失，请先登录"));
+	}
+	if (isMock) {
+		return Promise.resolve(pageApi.getHomeList(userId).data);
+	}
+	return http({
+		url: "/user/${userId}/getHomeList",
+		method: "GET",
+	});
 };
 
 /* -------------------- search页面 --------------------*/
@@ -157,7 +156,7 @@ export const login = (code) => {
     return Promise.resolve(pageApi.login(code).data);
   }
   return http({
-    url: '/api/user/auth/wechat-login',
+    url: '/user/auth/wechat-login',
     method: 'POST',
     data: { code },
   });
@@ -183,7 +182,7 @@ export const saveUserInfo = (userInfo) => {
     return Promise.resolve(pageApi.saveUserInfo(userInfo));
   }
   return http({
-    url: '/user/save-profile', // 请替换为实际的保存用户资料接口路径
+    url: '/user/save-profile',
     method: 'POST',
     data: userInfo,
   });

@@ -401,17 +401,23 @@ const wechatLogin = async () => {
 			  userInfo.avatarUrl = avatarUrl;
 			  userInfo.nickName = nickName;
 			  isGuest.value = false;
+			  userInfo.userId = loginResponseData.userVO.userId;
 
-			  // 如果 userInfo reactive 对象中也有 userId 字段，也在这里更新
-			  if (loginResponseData.userVO && loginResponseData.userVO.userId) {
-			  		userInfo.userId = loginResponseData.userVO.userId;
-			  }
-			  
 			  // 保存本地缓存
-			  uni.setStorageSync('userInfo', profileRes.userInfo);
+			  uni.setStorageSync('userInfo', JSON.stringify({
+				  userId: userInfo.userId,
+				  nickName: userInfo.nickName,
+				  description: userInfo.description,
+				  avatarUrl: userInfo.avatarUrl,
+				  uploadCount: userInfo.uploadCount,
+				  collectCount: userInfo.collectCount,
+				  likeCount: userInfo.likeCount,
+				  // ... 所有持久化的 userInfo 字段
+				}));
+			  console.log("本地缓存的 userInfo 对象:", userInfo); // reactive 对象
 			  
               // 上传用户资料到后端
-              await saveUserInfo(profileRes.userInfo);
+              await saveUserInfo(userInfo);
 
               resolve(true);
             },
@@ -558,6 +564,7 @@ const logout = () => {
     success: (res) => {
       if (res.confirm) {
         uni.removeStorageSync('token');
+		uni.removeStorageSync('refreshToken');
         uni.removeStorageSync('userInfo');
         userInfo.avatarUrl = 'https://cdn.uviewui.com/uview/album/1.jpg';
         userInfo.nickName = 'KMeme用户';
