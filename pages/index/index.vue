@@ -230,12 +230,12 @@ const loadData = async () => {
 		// 请求轮播图数据
 		const bannerRes = await getBanner();
 		console.log("轮播图数据", bannerRes);
-		bannerList.value = bannerRes || [];
+		bannerList.value = bannerRes.bannerList  || [];
 
 		// 请求相册列表数据
 		const albumRes = await getHomeList();
 		console.log("相册列表数据", albumRes);
-		albumList.value = albumRes || [];
+		albumList.value = albumRes.albumData || [];
 
 	} catch (error) {
 		console.error("数据加载失败：", error);

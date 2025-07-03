@@ -2,8 +2,7 @@ import pageApi from "./mockData/pageApi.js";
 import http from "./http.js";
 
 // 小程序使用 mock 数据
-const isMock =
-  process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM !== "h5";
+const isMock = process.env.NODE_ENV === "development" && process.env.UNI_PLATFORM !== "h5";
 
 /* -------------------- index页面 --------------------*/
 
@@ -149,7 +148,7 @@ export const login = (code) => {
     return Promise.resolve(pageApi.login(code));
   }
   return http({
-    url: '/auth/wechat-login', // 请替换为实际的登录接口路径
+    url: '/api/user/auth/wechat-login',
     method: 'POST',
     data: { code },
   });

@@ -157,14 +157,18 @@ export default {
 	getBanner: () => {
 		return {
 			code: 1,
-			data: state.bannerList,
+			data: {
+				bannerList: state.bannerList
+			},
 			msg: 'Banner获取成功'
 		}
 	},
 	getHomeList: (userId) => {
 		return {
 			code: 1,
-			data: state.albumData,
+			data: {
+				albumData: state.albumData
+			},
 			msg: '首页列表获取成功'
 		}
 	},
@@ -184,7 +188,9 @@ export default {
 		});		
 		return {
 			code: 1,
-			data: filtered,
+			data: {
+				albumData: filtered
+			},
 			msg: '相册列表获取成功'
 		};
 	},
@@ -193,7 +199,9 @@ export default {
 		if (!keyword || typeof keyword !== 'string' || keyword.trim() === '') {
 			return {
 				code: 1,
-				data: state.imgData,
+				data: {
+					imgData: state.imgData
+				},
 				msg: '关键词为空，未返回任何数据'
 			};
 		}
@@ -206,39 +214,41 @@ export default {
 		});
 		return {
 			code: 1,
-			data: filtered,
+			data: {
+				imgData: filtered
+			},
 			msg: '搜索成功'
 		};
 	},
 	deleteImage: (id) => {
-			const index = state.imgData.findIndex(item => item.id === id);
-			if (index !== -1) {
-				state.imgData.splice(index, 1);
-				return { code: 1, msg: '删除成功' };
-			}
-			return { code: 0, msg: '未找到图片' };
-		},
-	
-		// ✅ 新增：收藏/取消收藏
-		toggleCollect: (id, newStatus) => {
-			const item = state.imgData.find(i => i.id === id);
-			if (item) {
-				item.isCollected = newStatus ? '已收藏' : '';
-				return { code: 1, msg: '收藏状态已更新' };
-			}
-			return { code: 0, msg: '未找到图片' };
-		},
-	
-		// ✅ 新增：排序（按字段 ASC）
-		sortImages: (key = 'title') => {
-			return {
-				code: 1,
-				data: [...state.imgData].sort((a, b) => {
-					const valA = (a[key] || '').toString();
-					const valB = (b[key] || '').toString();
-					return valA.localeCompare(valB);
-				}),
-				msg: '排序成功'
-			};
+		const index = state.imgData.findIndex(item => item.id === id);
+		if (index !== -1) {
+			state.imgData.splice(index, 1);
+			return { code: 1, msg: '删除成功' };
 		}
+		return { code: 0, msg: '未找到图片' };
+	},
+
+	// 收藏/取消收藏
+	toggleCollect: (id, newStatus) => {
+		const item = state.imgData.find(i => i.id === id);
+		if (item) {
+			item.isCollected = newStatus ? '已收藏' : '';
+			return { code: 1, msg: '收藏状态已更新' };
+		}
+		return { code: 0, msg: '未找到图片' };
+	},
+
+	// 排序（按字段 ASC）
+	sortImages: (key = 'title') => {
+		return {
+			code: 1,
+			data: [...state.imgData].sort((a, b) => {
+				const valA = (a[key] || '').toString();
+				const valB = (b[key] || '').toString();
+				return valA.localeCompare(valB);
+			}),
+			msg: '排序成功'
+		};
+	}
 }

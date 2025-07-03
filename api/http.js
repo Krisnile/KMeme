@@ -8,8 +8,8 @@ let baseUrl = ''
  * 小程序开发环境的请求会尝试发送到此本地地址。
  */
 if (process.env.NODE_ENV === 'development') {
-	baseUrl = 'https://localhost:5173/api'
-	// baseUrl = 'http://192.168.71.112:8080'
+	// baseUrl = 'https://localhost:5173/api'
+	baseUrl = 'http://192.168.31.246:8080'
 } else {
 	baseUrl = 'http://192.168.71.112:8080'
 }
