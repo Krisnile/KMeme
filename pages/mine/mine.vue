@@ -48,6 +48,14 @@
 				</view>
 			</view>
 			
+			<!-- 登录模块 -->
+			<view class="user-auth-card" v-if="isGuest">
+			    <view class="auth-card-content">
+					<text>当前为游客模式，是否登录以保存收藏与历史？</text>
+					<button class="auth-button" @tap="onLoginClick">立即登录</button>
+			    </view>
+			</view>
+
 			<!-- 功能菜单 -->
 			<view class="menu-section">
 				<!-- 我的创作 -->
@@ -244,6 +252,9 @@ const userInfo = reactive({
 	likeCount: 156
 })
 
+// 游客模式
+const isGuest = ref(!uni.getStorageSync('token'));
+
 // 应用设置
 const settings = reactive({
 	notification: true,
@@ -276,6 +287,41 @@ onLoad(async () => {
 onShow(() => {
 	refreshStats()
 })
+
+const onLoginClick = () => {
+  uni.showModal({
+    title: '微信授权登录',
+    content: '我们将获取你的昵称与头像信息，用于账户识别',
+    confirmText: '继续',
+    success: (res) => {
+      if (res.confirm) {
+        uni.login({
+          success: async (loginRes) => {
+            // 用 code 换 token
+            const { token } = await login(loginRes.code); // 重写 login 接口
+            uni.setStorageSync('token', token);
+
+            // 获取微信头像昵称
+            uni.getUserProfile({
+              desc: '用于展示用户信息',
+              success: async (profileRes) => {
+                const { avatarUrl, nickName } = profileRes.userInfo;
+                await saveUserInfo({ avatarUrl, nickName }); // 上传用户资料
+                uni.setStorageSync('userInfo', profileRes.userInfo);
+                userInfo.avatarUrl = avatarUrl;
+                userInfo.nickName = nickName;
+                isGuest.value = false;
+              },
+              fail: () => {
+                uni.showToast({ title: '用户取消授权', icon: 'none' });
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+};
 
 // 加载用户数据
 const loadUserData = () => {
@@ -420,37 +466,21 @@ const goToAbout = () => {
 
 // 退出登录
 const logout = () => {
-	uni.showModal({
-		title: '确认退出',
-		content: '确定要退出登录吗？',
-		confirmColor: '#ef4444',
-		success: (res) => {
-			if (res.confirm) {
-				console.log("确认登录")
-				uni.login({
-					success: async (data) => {
-						console.log(data)
-						// 通过code传给后端，后端去换取sessionKey
-						const{ token } = await login(data.code)
-						console.log(token, 'token')
-						uni.setStorageSync('token', token)
-						// 通过token获取用户信息
-						const userData = await getUserInfo()
-						// 把用户信息显示到页面
-						userInfo.avatarUrl = userData.avatarUrl
-						userInfo.nickName = userData.nickName
-						show.value = true 
-					},
-					fail(err) {
-						console.error('uni.login调用失败:', err)
-						uni.showToast({ title: '登录失败，请重试', icon: 'error' })
-					}
-				})
-				// 这里可以跳转到登录页面
-			}
-		}
-	})
-}
+  uni.showModal({
+    title: '确认退出登录？',
+    success: (res) => {
+      if (res.confirm) {
+        uni.removeStorageSync('token');
+        uni.removeStorageSync('userInfo');
+        userInfo.avatarUrl = '';
+        userInfo.nickName = '';
+        isGuest.value = true;
+        uni.showToast({ title: '已退出登录', icon: 'none' });
+      }
+    }
+  });
+};
+
 
 // 返回上一页
 const goBack = () => {
