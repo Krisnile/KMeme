@@ -370,6 +370,7 @@ const albumData = reactive({
   description: "",
   tag: "",
   imgUrl: "",
+  userId: -1,
 });
 
 // 可选标签
@@ -438,6 +439,8 @@ const clearBtnStyle = {
 onLoad(() => {
   console.log("上传页面已加载");
 });
+
+// ===================== 图片上传模式相关函数=====================
 
 // 选择图片
 const chooseImage = () => {
@@ -664,7 +667,9 @@ const goBack = () => {
   }
 };
 
-// 切换模式
+// ===================== 新建相册模式相关函数 =====================
+
+// 切换模式 (通用函数)
 const switchMode = (mode) => {
   currentMode.value = mode;
 
@@ -742,36 +747,88 @@ const createAlbum = async () => {
     return;
   }
 
-  creating.value = true;
+  // 从 userInfo 中获取 ID
+  const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
+  const userId = storedUserInfo.userId;
+  // userId 存在性检查
+  if (!userId || userId === -1) {
+    uni.showToast({ title: "用户ID缺失，请先登录", icon: "none" });
+    creating.value = false;
+    return;
+  }
+  // 将获取到的 userId 赋值给 albumData
+  albumData.userId = storedUserInfo.userId;
+
+  // 确保 albumData.imgUrl 是一个本地临时文件路径
+  if (!albumData.imgUrl.startsWith('wxfile://') && !albumData.imgUrl.startsWith('http://tmp/')) {
+    uni.showToast({ title: '封面图片必须从本地选择', icon: 'error' });
+    creating.value = false;
+    return;
+  }
+
+  creating.value = true; // 显示加载状态
 
   try {
+    uni.showLoading({ title: '创建相册中...' }); // 显示上传和创建的统一加载提示
+
     // 模拟创建相册API调用
-    await createAlbumApi(albumData);
+    // await createAlbumApi(albumData);
 
-    // 创建成功
-    uni.showModal({
-      title: "创建成功",
-      content: `相册"${albumData.title}"创建成功！`,
-      showCancel: false,
-      confirmText: "返回首页",
-      success: () => {
-        // 清空表单数据
-        clearAlbumData();
-
-        // 返回首页
-        uni.switchTab({
-          url: "/pages/index/index",
-        });
+    // 使用 uni.uploadFile 同时上传图片和 formData
+    const uploadRes = await uni.uploadFile({
+      // 【重要】：这是你的后端“创建相册”接口地址
+      // 后端需要能处理 multipart/form-data 类型请求
+      url: 'http://192.168.31.246:8080/api/user/album/create',
+      filePath: albumData.imgUrl, // 要上传的本地文件路径 (wxfile:// 或 http://tmp/)
+      name: 'file', // 后端接收图片文件的字段名，例如：<input type="file" name="file">
+      header: {
+        'token': uni.getStorageSync('token') || '' // 如果上传接口需要 Token，请携带
+      },
+      formData: { // 【关键】：将相册的其他文字信息放入 formData
+        title: albumData.title,
+        description: albumData.description,
+        tag: albumData.tag,
+        userId: albumData.userId.toString(), // userId 可能是数字，formData 最好是字符串
+        // 如果后端需要 isPublic 等，也可以加在这里
+        // isPublic: albumData.isPublic ? 'true' : 'false', // 布尔值转字符串
       },
     });
+    uni.hideLoading();
+
+    // 解析后端返回的响应数据
+    const responseData = JSON.parse(uploadRes.data);
+
+    // 根据后端响应判断是否创建成功
+    if (responseData.code === 1 || responseData.msg === "success") { // 这里的判断要和 http.js 保持一致
+        // 创建成功
+        uni.showModal({
+            title: "创建成功",
+            content: `相册"${albumData.title}"创建成功！`,
+            showCancel: false,
+            confirmText: "返回首页",
+            success: () => {
+                clearAlbumData(); // 清空表单数据
+                uni.switchTab({
+                    url: "/pages/index/index", // 返回首页
+                });
+            },
+        });
+    } else {
+        // 后端业务失败
+        uni.showToast({ title: responseData.msg || '创建失败，请重试', icon: 'error' });
+        console.error("创建相册后端响应业务失败:", responseData);
+    }
+
   } catch (error) {
+    // 请求失败或解析错误
+    uni.hideLoading();
     console.error("创建相册失败：", error);
     uni.showToast({
       title: "创建失败，请重试",
       icon: "none",
     });
   } finally {
-    creating.value = false;
+    creating.value = false; // 无论成功或失败都关闭加载状态
   }
 };
 

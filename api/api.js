@@ -32,11 +32,8 @@ export const getBanner = () => {
 export const getHomeList = () => {
 	// 从 userInfo 中获取 ID
 	const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
-	const userId = storedUserInfo.id;
-	if (!userId) {
-		console.error("getHomeList: userId 是必需参数！");
-		return Promise.reject(new Error("用户ID缺失，请先登录"));
-	}
+	const userId = storedUserInfo.userId;
+
 	if (isMock) {
 		return Promise.resolve(pageApi.getHomeList(userId).data);
 	}
@@ -274,14 +271,16 @@ export const collectList = () => {
  * @param {string} albumData.description - 相册描述
  * @param {string} albumData.tag - 相册标签
  * @param {string} albumData.imgUrl - 相册封面图片URL
+ * @param {number} albumData.userId - 用户ID
+ * @param {number} albumData.albumId - 相册ID
  * @returns {Promise<Object>} 创建结果
  */
-export const createAlbum = (albumData) => {
+export const createNewAlbum = (albumData) => {
   if (isMock) {
-    return Promise.resolve(pageApi.createAlbum(albumData));
+    return Promise.resolve(pageApi.createNewAlbum(albumData));
   }
   return http({
-    url: "/album/create",
+    url: "/user/album/create",
     method: "POST",
     data: albumData,
   });
