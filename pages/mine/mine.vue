@@ -453,6 +453,7 @@ const userSubmit = async () => {
 
   } catch (error) {
     console.error("登录保存用户资料失败:", error);
+    show.value = false;
     uni.showToast({ title: '呜哇,登录失败了！', icon: 'error' });
   }
 };

@@ -38,7 +38,8 @@ export default function http (options) {
 				// 检查 HTTP 状态码
 				if (res.statusCode === 200) {
 					// 检查业务状态码
-					if (res.data.code === 1 || res.data.msg === "success") {
+					if (res.data.code === 1 || res.data.msg === "success" || ) {
+            console.log("res.data.data", res.data.data);
 						resolve(res.data.data) // 业务成功，返回数据
 					} else if (res.data.code === 0) {
 						uni.showToast({
