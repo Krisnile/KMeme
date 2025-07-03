@@ -29,16 +29,13 @@ export const getBanner = () => {
  * @param {string} userId - 要获取数据的用户 ID。
  * @returns {Promise<Array>} 首页列表数据。
  */
-export const getHomeList = () => {
-	// 从 userInfo 中获取 ID
-	const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
-	const userId = storedUserInfo.userId;
+export const getHomeList = (userId) => {
 
 	if (isMock) {
 		return Promise.resolve(pageApi.getHomeList(userId).data);
 	}
 	return http({
-		url: "/user/${userId}/getHomeList",
+		url: `/user/${userId}/getHomeList`,
 		method: "GET",
 	});
 };

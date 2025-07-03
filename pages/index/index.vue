@@ -1,8 +1,8 @@
 <template>
 	<view class="index-container">
-		
+
 		<!-- ================== 页面顶部内容 ================== -->
-		
+
 		<!-- 顶部状态栏：占位 -->
 	    <up-status-bar></up-status-bar>
 		<!-- 顶部导航栏 -->
@@ -14,9 +14,9 @@
 			:title-style="titleStyle"
 		>
 		</up-navbar>
-		
+
 		<!-- ================== 页面主体内容：支持纵向滚动 ================== -->
-		
+
 		<scroll-view
 			class="content"
 			scroll-y
@@ -157,14 +157,14 @@
 				</view>
 			</view>
 		</scroll-view>
-		
+
 		<!-- ================== 页面其他内容 ================== -->
-		
+
 		<!-- 置顶按钮，滚动超过阈值时显示 -->
 		<view v-if="showTopBtn" @click="toTop" class="topClass">
 			<up-icon name="arrow-upward" :color="topBtnIconColor" size="28"></up-icon>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -232,8 +232,11 @@ const loadData = async () => {
 		console.log("轮播图数据", bannerRes);
 		bannerList.value = bannerRes.bannerList  || [];
 
+    // 从 userInfo 中获取 ID
+    const storedUserInfo = JSON.parse(uni.getStorageSync('userInfo') || '{}');
+    const userId = storedUserInfo.userId;
 		// 请求相册列表数据
-		const albumRes = await getHomeList();
+		const albumRes = await getHomeList(userId);
 		console.log("相册列表数据", albumRes);
 		albumList.value = albumRes.albumData || [];
 
@@ -317,7 +320,7 @@ const toTop = () => {
 
 .content {
 	position: absolute;
-	top: 150rpx; 
+	top: 150rpx;
 	left: 0;
 	right: 0;
 	bottom: 0;

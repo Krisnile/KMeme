@@ -347,7 +347,7 @@ import { onLoad } from "@dcloudio/uni-app";
 
 // 响应式数据
 const currentMode = ref("upload"); // 当前模式：'upload' 上传图片, 'album' 新建相册
-const imageList = ref([]);
+const imageList = ref([]); // 存储待上传的图片文件路径
 const maxImages = ref(9);
 const uploading = ref(false);
 const creating = ref(false);
@@ -776,28 +776,35 @@ const createAlbum = async () => {
 
     // 使用 uni.uploadFile 同时上传图片和 formData
     const uploadRes = await uni.uploadFile({
-      // 【重要】：这是你的后端“创建相册”接口地址
-      // 后端需要能处理 multipart/form-data 类型请求
+      // multipart/form-data 类型请求
       url: 'http://192.168.31.246:8080/api/user/album/create',
       filePath: albumData.imgUrl, // 要上传的本地文件路径 (wxfile:// 或 http://tmp/)
       name: 'file', // 后端接收图片文件的字段名，例如：<input type="file" name="file">
       header: {
         'token': uni.getStorageSync('token') || '' // 如果上传接口需要 Token，请携带
       },
-      formData: { // 【关键】：将相册的其他文字信息放入 formData
+      formData: { // 将相册的其他文字信息放入 formData
         title: albumData.title,
         description: albumData.description,
         tag: albumData.tag,
         userId: albumData.userId.toString(), // userId 可能是数字，formData 最好是字符串
-        // 如果后端需要 isPublic 等，也可以加在这里
-        // isPublic: albumData.isPublic ? 'true' : 'false', // 布尔值转字符串
+        isPublic: albumData.isPublic ? 'true' : 'false', // 布尔值转字符串
       },
     });
     uni.hideLoading();
 
     // 解析后端返回的响应数据
     const responseData = JSON.parse(uploadRes.data);
-
+    // {
+    //     "code": 1,
+    //     "msg": "相册创建成功",
+    //     "data": {
+    //         "albumId": "generated_unique_album_id_string_or_number",
+    //         "imgUrl": "https://your-public-cdn.com/new_cover.jpg",
+    //         "title": "新相册标题"
+    //     }
+    // }
+    console.log("responseData", responseData)
     // 根据后端响应判断是否创建成功
     if (responseData.code === 1 || responseData.msg === "success") { // 这里的判断要和 http.js 保持一致
         // 创建成功
@@ -850,7 +857,7 @@ const createAlbumApi = (albumInfo) => {
   });
 };
 
-// 清空相册数据
+// 清空相册数据 (通用函数)
 const clearAlbumData = () => {
   albumData.title = "";
   albumData.description = "";
